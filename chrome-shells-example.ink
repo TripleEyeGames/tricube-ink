@@ -148,7 +148,6 @@ VAR challengeEffort = 0
             ~ return getRollResolutionRecursive(which_dice, difficulty_level_to_check + 1)
     }
 
-
 === function checkRollResults(difficulty)
     ~ temp combined_roll_results = ()
     ~ combined_roll_results = getRollResolutionRecursive(d1, difficulty) + getRollResolutionRecursive(d2, difficulty) + getRollResolutionRecursive(d3, difficulty)
@@ -183,7 +182,6 @@ VAR challengeEffort = 0
         ~ return challengeResolution.exceptionalSuccess
     }
 
-
 === function rollRecursive(number_of_dice)
     { number_of_dice > 0:
         ~ temp rolled_value = RANDOM(1, number_of_faces)
@@ -197,12 +195,10 @@ VAR challengeEffort = 0
 
     ~ return
 
-
 === function rollDice(number_of_dice, difficulty)
     ~ challengeDice = ()
     ~ rollRecursive(number_of_dice)
     ~ return checkRollResults(difficulty)
-
 
 === function useKarma()
     {
@@ -212,7 +208,6 @@ VAR challengeEffort = 0
     - else:
         ~ return false
     }
-
 
 === function loseResolve(resolution)
     {
@@ -227,15 +222,36 @@ VAR challengeEffort = 0
         ~ return false
     }
 
-
 === function recoverKarma()
     ~ characterKarma++
     ~ return
 
-
 === function recoverResolve()
     ~ characterResolve++
     ~ return
+
+=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, relevant_perks, relevant_quirks, -> goto_success, -> goto_failure)
+
+    ~ temp check_result = challengeResolution()
+    {
+        - applicable_trait == characterTrait:
+            ~ check_result = rollDice(3, target_difficulty)
+        - else:
+            ~ check_result = rollDice(2, target_difficulty)
+    }
+    
+    {check_result} {challengeDice}
+
+    { check_result:
+        - challengeResolution.criticalFailure:
+            -> goto_failure
+        - challengeResolution.failure:
+            -> goto_failure
+        - challengeResolution.success:
+            -> goto_success
+        - challengeResolution.exceptionalSuccess:
+            -> goto_success
+    }
 
 
 === unitTests ===
@@ -505,5 +521,23 @@ Is that correct?
         -> doCharacterConfiguration
 
 === startTheJob ===
-- They lived happily ever after.
+You have been hired to break into a “Haven Hosting” facility and steal a magical HAVEN figurine from the premises.
+There are dozens of these locations scattered around the world, each built upon areas of natural magic to strengthen their enchantments and wards. Ostensibly, the facilities are designed to host and protect Haven’s computer servers—but top tier customers are also offered a safe deposit box service called the “Vault.”
+
+-> attemptEntry
+
+= attemptEntry
+You can approach the facility in a variety of ways. Which do you want to try?
+    * [Stealth]
+        -> challengeCheck (6, characterTrait.agile, (samurai, thief, saboteur), (), (), -> sneak_in_success, -> attemptEntry )
+        
+    * [Brute Force]
+        -> welcome_inside
+    * [Deception]
+        -> welcome_inside
+        
+= sneak_in_success
+    -> welcome_inside
+= welcome_inside
+    Welcome inside!
     -> END
