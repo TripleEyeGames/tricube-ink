@@ -230,7 +230,7 @@ VAR challengeEffort = 0
     ~ characterResolve++
     ~ return
 
-=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, relevant_perks, relevant_quirks, -> goto_failure)
+=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, -> goto_failure)
 
     ~ temp check_result = challengeResolution()
     {
@@ -531,17 +531,17 @@ There are dozens of these locations scattered around the world, each built upon 
 = attemptEntry
 You can approach the facility in a variety of ways. Which do you want to try?
     * Stealth
-        -> challengeCheck (6, characterTrait.agile, (thief, techie, saboteur), (), (), -> failedEntry ) ->
+        -> challengeCheck (6, characterTrait.agile, (thief, techie, saboteur), -> failedEntry ) ->
         You've successfully snuck through security.
         -> welcome_inside
         
     * Brute Force
-        -> challengeCheck (6, characterTrait.brawny, (samurai, wheelperson), (), (), -> failedEntry ) ->
+        -> challengeCheck (6, characterTrait.brawny, (samurai, wheelperson), -> failedEntry ) ->
         You've successfully crashed through security.
         -> welcome_inside
 
     * Deception
-        -> challengeCheck (6, characterTrait.crafty, (hustler, hacker), (), (), -> failedEntry ) ->
+        -> challengeCheck (6, characterTrait.crafty, (hustler, hacker), -> failedEntry ) ->
         You've successfully talked your way through security.
         -> welcome_inside
 
