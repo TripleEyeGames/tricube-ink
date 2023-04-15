@@ -230,17 +230,19 @@ VAR challengeEffort = 0
     ~ characterResolve++
     ~ return
 
-=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, relevant_perks, relevant_quirks, -> goto_success, -> goto_failure)
+=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, relevant_perks, relevant_quirks, -> goto_failure)
 
     ~ temp check_result = challengeResolution()
     {
         - applicable_trait == characterTrait:
             ~ check_result = rollDice(3, target_difficulty)
-        - else:
+        - applicable_concepts ? characterConcept:
             ~ check_result = rollDice(2, target_difficulty)
+        - else:
+            ~ check_result = rollDice(1, target_difficulty)
     }
     
-    {check_result} {challengeDice}
+    DEBUG: {check_result} {challengeDice}
 
     { check_result:
         - challengeResolution.criticalFailure:
@@ -248,9 +250,9 @@ VAR challengeEffort = 0
         - challengeResolution.failure:
             -> goto_failure
         - challengeResolution.success:
-            -> goto_success
+            ->->
         - challengeResolution.exceptionalSuccess:
-            -> goto_success
+            ->->
     }
 
 
@@ -528,16 +530,25 @@ There are dozens of these locations scattered around the world, each built upon 
 
 = attemptEntry
 You can approach the facility in a variety of ways. Which do you want to try?
-    * [Stealth]
-        -> challengeCheck (6, characterTrait.agile, (samurai, thief, saboteur), (), (), -> sneak_in_success, -> attemptEntry )
-        
-    * [Brute Force]
-        -> welcome_inside
-    * [Deception]
+    * Stealth
+        -> challengeCheck (6, characterTrait.agile, (thief, techie, saboteur), (), (), -> failedEntry ) ->
+        You've successfully snuck through security.
         -> welcome_inside
         
-= sneak_in_success
-    -> welcome_inside
+    * Brute Force
+        -> challengeCheck (6, characterTrait.brawny, (samurai, wheelperson), (), (), -> failedEntry ) ->
+        You've successfully crashed through security.
+        -> welcome_inside
+
+    * Deception
+        -> challengeCheck (6, characterTrait.crafty, (hustler, hacker), (), (), -> failedEntry ) ->
+        You've successfully talked your way through security.
+        -> welcome_inside
+
+= failedEntry
+    You were not able to get in that way. Try again.
+    -> attemptEntry
+    
 = welcome_inside
     Welcome inside!
     -> END
