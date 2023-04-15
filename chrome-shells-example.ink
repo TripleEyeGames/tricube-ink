@@ -1,3 +1,11 @@
+// game data
+
+CONST number_of_faces = 6
+LIST challengeDice = 
+    d1 = 10, d1_1, d1_2, d1_3, d1_4, d1_5, d1_6,
+    d2 = 20, d2_1, d2_2, d2_3, d2_4, d2_5, d2_6,
+    d3 = 30, d3_1, d3_2, d3_3, d3_4, d3_5, d3_6
+LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 
 // character data
 
@@ -6,17 +14,15 @@ LIST characterConcept = samurai, hustler, thief, hacker, techie, wheelperson, sa
 LIST characterPerk = cyberarm, boosted_reflexes, smartgun, custom_cyberdeck, microdrones, full_spectrum_vision, retractable_claws
 LIST characterQuirk = inquisitive, cynical, obnoxious, foolhardy, brooding, callous, gloryhound
 
-// gameplay data
-VAR number_of_faces = 6
-LIST challengeDice = 
-    d1 = 10, d1_1, d1_2, d1_3, d1_4, d1_5, d1_6,
-    d2 = 20, d2_1, d2_2, d2_3, d2_4, d2_5, d2_6,
-    d3 = 30, d3_1, d3_2, d3_3, d3_4, d3_5, d3_6
+// gameplay variance
 
-LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
+VAR characterKarma = 3
+VAR characterResolve = 3
+VAR challengeEffort = 0
 
--> unitTests
-//-> characterCreation
+
+//-> unitTests
+-> characterCreation
 
 /*****************************************
  *                                       *
@@ -116,46 +122,48 @@ LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 //*                             *
 //*******************************
 
-=== function getRollResolutionRecursive(which_dice, difficulty)
+=== function getRollResolutionRecursive(which_dice, difficulty_level_to_check)
     
-    // if the value is 1, it's a potential critical failure
-    { challengeDice ? challengeDice(LIST_VALUE(which_dice) + 1):
-        ~ return challengeResolution.criticalFailure
+    // if the value is not set, there's no resolution possible
+    { challengeDice !? which_dice:
+        ~return ()
     }
     
     // if we've passed the size of the dice w/o finding a match, it's a failure
-    { difficulty > number_of_faces:
+    { difficulty_level_to_check > number_of_faces:
         ~ return challengeResolution.failure
     }
     
-    { challengeDice ? challengeDice(LIST_VALUE(which_dice) + difficulty):
-        ~ return challengeResolution.success
-    - else:
-        ~ return getRollResolutionRecursive(which_dice, difficulty + 1)
+    {
+        // if the value is 1, it's a potential critical failure
+        - challengeDice ? challengeDice(LIST_VALUE(which_dice) + 1):
+            ~ return challengeResolution.criticalFailure
+            
+        // if the value is set for the checked difficulty level, it's a success
+        - challengeDice ? challengeDice(LIST_VALUE(which_dice) + difficulty_level_to_check):
+            ~ return challengeResolution.success
+        
+        // if the value is not 1 and not set for the checked difficulty level, we need to proceed upwards
+        - else:
+            ~ return getRollResolutionRecursive(which_dice, difficulty_level_to_check + 1)
     }
 
 
-=== function checkRollResults(number_of_dice, difficulty)
-    // check for critical failure
-    ~ temp roll_results = ()
-    ~ roll_results = challengeResolution()
+=== function checkRollResults(difficulty)
+    ~ temp combined_roll_results = ()
+    ~ combined_roll_results = getRollResolutionRecursive(d1, difficulty) + getRollResolutionRecursive(d2, difficulty) + getRollResolutionRecursive(d3, difficulty)
     
-    ~ temp crit_fail_counter = 0
-    { challengeDice ? (d1, d1_1):
-        ~ crit_fail_counter++
-    }
-    { challengeDice ? (d2, d2_1):
-        ~ crit_fail_counter++
-    }
-    { challengeDice ? (d3, d3_1):
-        ~ crit_fail_counter++
+    { 
+        // if we have only critical failures, then it is a critical failure
+        - combined_roll_results == challengeResolution.criticalFailure:
+            ~ return challengeResolution.criticalFailure
+
+        // if we have no successes, then it is a failure
+        - combined_roll_results !? (challengeResolution.success):
+            ~ return challengeResolution.failure
     }
     
-    { number_of_dice == crit_fail_counter:
-        ~ return challengeResolution.criticalFailure
-    }
-    
-    // check for success
+    // count successes
     ~ temp number_of_successes = 0
     { challengeDice ? d1 && getRollResolutionRecursive(d1, difficulty) == challengeResolution.success:
         ~ number_of_successes++
@@ -169,8 +177,6 @@ LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 
     // check for exceptional success
     { number_of_successes:
-    - 0:
-        ~ return challengeResolution.failure
     - 1:
         ~ return challengeResolution.success
     - else:
@@ -195,73 +201,189 @@ LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 === function rollDice(number_of_dice, difficulty)
     ~ challengeDice = ()
     ~ rollRecursive(number_of_dice)
-    ~ return checkRollResults(number_of_dice, difficulty)
+    ~ return checkRollResults(difficulty)
+
+
+=== function useKarma()
+    {
+    - characterKarma > 0:
+        ~ characterKarma--
+        ~ return true
+    - else:
+        ~ return false
+    }
+
+
+=== function loseResolve(resolution)
+    {
+    - challengeResolution == failure && characterResolve > 1:
+        ~ characterResolve--
+        ~ return true
+    - challengeResolution == criticalFailure && characterResolve > 2:
+        ~ characterResolve--
+        ~ characterResolve--
+        ~ return true
+    - else:
+        ~ return false
+    }
+
+
+=== function recoverKarma()
+    ~ characterKarma++
+    ~ return
+
+
+=== function recoverResolve()
+    ~ characterResolve++
+    ~ return
 
 
 === unitTests ===
+    // which test suite do you want to run?
+    -> checkRollResultsTests
+
+    = getRollResolutionRecursiveTests
+    // crit fail
+    ~ challengeDice = ()
+    ~ challengeDice += (d1, d1_1)
+    getRollResolutionRecursive - Critical Failure - 1 die ({challengeDice}) vs 5: {getRollResolutionRecursive(d1, 5) != criticalFailure:<b>!!!</b>|✔}
+    
+    // fail
+    ~ challengeDice = ()
+    ~ challengeDice += (d1, d1_2)
+    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 3: {getRollResolutionRecursive(d1, 3) != failure:<b>!!!</b>|✔}
+    
+    // fail
+    ~ challengeDice = ()
+    ~ challengeDice += (d1, d1_5)
+    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 6: {getRollResolutionRecursive(d1, 6) != failure:<b>!!!</b>|✔}
+    
+    // success
+    ~ challengeDice = ()
+    ~ challengeDice += (d1, d1_2)
+    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 2: {getRollResolutionRecursive(d1, 2) != success:<b>!!!</b>|✔}
+    
+    // success
+    ~ challengeDice = ()
+    ~ challengeDice += (d1, d1_6)
+    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 6: {getRollResolutionRecursive(d1, 6) != success:<b>!!!</b>|✔}
+    
+
+    -> END
+
     = checkRollResultsTests
     // crit fail - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1)
-    checkRollResults - Critical Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(1, 5)}
+    checkRollResults - Critical Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(5) != criticalFailure:<b>!!!</b>|✔}
     
     // crit fail - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_1)
-    checkRollResults - Critical Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(2, 5)}
+    checkRollResults - Critical Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(5) != criticalFailure:<b>!!!</b>|✔}
     
     // crit fail - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_1, d3, d3_1)
-    checkRollResults - Critical Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(3, 5)}
+    checkRollResults - Critical Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(5) != criticalFailure:<b>!!!</b>|✔}
     
     // fail - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3)
-    checkRollResults - Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(1, 5)}
+    checkRollResults - Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(5) != failure:<b>!!!</b>|✔}
     
     // fail - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3, d2, d2_4)
-    checkRollResults - Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(2, 5)}
+    checkRollResults - Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(5) != failure:<b>!!!</b>|✔}
     
     // fail - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_2, d3, d3_3)
-    checkRollResults - Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(3, 5)}
+    checkRollResults - Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(5) != failure:<b>!!!</b>|✔}
     
     // success - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_5)
-    checkRollResults - Success - 1 die ({challengeDice}) vs 5: {checkRollResults(1, 5)}
+    checkRollResults - Success - 1 die ({challengeDice}) vs 5: {checkRollResults(5) != success:<b>!!!</b>|✔}
     
     // success - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3, d2, d2_6)
-    checkRollResults - Success - 2 die ({challengeDice}) vs 5: {checkRollResults(2, 5)}
+    checkRollResults - Success - 2 die ({challengeDice}) vs 5: {checkRollResults(5) != success:<b>!!!</b>|✔}
     
     // success - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_2, d3, d3_6)
-    checkRollResults - Success - 3 die ({challengeDice}) vs 5: {checkRollResults(3, 5)}
-    
-    // exceptional success - 1 die
-    ~ challengeDice = ()
-    ~ challengeDice += (d1, d1_5)
-    checkRollResults - (Exceptional) Success - 1 die ({challengeDice}) vs 5: {checkRollResults(1, 5)}
+    checkRollResults - Success - 3 die ({challengeDice}) vs 5: {checkRollResults(5) != success:<b>!!!</b>|✔}
     
     // exceptional success - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_6, d2, d2_6)
-    checkRollResults - Exceptional Success - 2 die ({challengeDice}) vs 5: {checkRollResults(2, 5)}
+    checkRollResults - Exceptional Success - 2 die ({challengeDice}) vs 5: {checkRollResults(5) != exceptionalSuccess:<b>!!!</b>|✔}
     
     // exceptional success - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_5, d3, d3_6)
-    checkRollResults - Exceptional Success - 3 die ({challengeDice}) vs 5: {checkRollResults(3, 5)}
+    checkRollResults - Exceptional Success - 3 die ({challengeDice}) vs 5: {checkRollResults(5) != exceptionalSuccess:<b>!!!</b>|✔}
     
--> END
+    -> END
 
+    = rollDiceTests
+    
+    // 1 die
+    <tt>rollDice - 1 die vs 2: {rollDice(1, 2)} ({challengeDice})
+    <tt>...................... {rollDice(1, 2)} ({challengeDice})
+    <tt>...................... {rollDice(1, 2)} ({challengeDice})
+    <tt>rollDice - 1 die vs 3: {rollDice(1, 3)} ({challengeDice})
+    <tt>...................... {rollDice(1, 3)} ({challengeDice})
+    <tt>...................... {rollDice(1, 3)} ({challengeDice})
+    <tt>rollDice - 1 die vs 4: {rollDice(1, 4)} ({challengeDice})
+    <tt>...................... {rollDice(1, 4)} ({challengeDice})
+    <tt>...................... {rollDice(1, 4)} ({challengeDice})
+    <tt>rollDice - 1 die vs 5: {rollDice(1, 5)} ({challengeDice})
+    <tt>...................... {rollDice(1, 5)} ({challengeDice})
+    <tt>...................... {rollDice(1, 5)} ({challengeDice})
+    <tt>rollDice - 1 die vs 6: {rollDice(1, 6)} ({challengeDice})
+    <tt>...................... {rollDice(1, 6)} ({challengeDice})
+    <tt>...................... {rollDice(1, 6)} ({challengeDice})
+    
+    // 2 die
+    <tt>rollDice - 2 die vs 2: {rollDice(2, 2)} ({challengeDice})
+    <tt>...................... {rollDice(2, 2)} ({challengeDice})
+    <tt>...................... {rollDice(2, 2)} ({challengeDice})
+    <tt>rollDice - 2 die vs 3: {rollDice(2, 3)} ({challengeDice})
+    <tt>...................... {rollDice(2, 3)} ({challengeDice})
+    <tt>...................... {rollDice(2, 3)} ({challengeDice})
+    <tt>rollDice - 2 die vs 4: {rollDice(2, 4)} ({challengeDice})
+    <tt>...................... {rollDice(2, 4)} ({challengeDice})
+    <tt>...................... {rollDice(2, 4)} ({challengeDice})
+    <tt>rollDice - 2 die vs 5: {rollDice(2, 5)} ({challengeDice})
+    <tt>...................... {rollDice(2, 5)} ({challengeDice})
+    <tt>...................... {rollDice(2, 5)} ({challengeDice})
+    <tt>rollDice - 2 die vs 6: {rollDice(2, 6)} ({challengeDice})
+    <tt>...................... {rollDice(2, 6)} ({challengeDice})
+    <tt>...................... {rollDice(2, 6)} ({challengeDice})
+    
+    // 3 die
+    <tt>rollDice - 3 die vs 2: {rollDice(3, 2)} ({challengeDice})
+    <tt>...................... {rollDice(3, 2)} ({challengeDice})
+    <tt>...................... {rollDice(3, 2)} ({challengeDice})
+    <tt>rollDice - 3 die vs 3: {rollDice(3, 3)} ({challengeDice})
+    <tt>...................... {rollDice(3, 3)} ({challengeDice})
+    <tt>...................... {rollDice(3, 3)} ({challengeDice})
+    <tt>rollDice - 3 die vs 4: {rollDice(3, 4)} ({challengeDice})
+    <tt>...................... {rollDice(3, 4)} ({challengeDice})
+    <tt>...................... {rollDice(3, 4)} ({challengeDice})
+    <tt>rollDice - 3 die vs 5: {rollDice(3, 5)} ({challengeDice})
+    <tt>...................... {rollDice(3, 5)} ({challengeDice})
+    <tt>...................... {rollDice(3, 5)} ({challengeDice})
+    <tt>rollDice - 3 die vs 6: {rollDice(3, 6)} ({challengeDice})
+    <tt>...................... {rollDice(3, 6)} ({challengeDice})
+    <tt>...................... {rollDice(3, 6)} ({challengeDice})
+    
+    -> END
+    
 
 === characterCreation ===
 Welcome to the Chrome Shells & Neon Streets demo, made in Inky!
