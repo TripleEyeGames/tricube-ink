@@ -1,6 +1,6 @@
 // game data
 
-CONST number_of_faces = 6
+CONST MAX_DIFFICULTY = 6
 CONST MAX_DICE = 3
 LIST challengeDice = 
     d1 = 10, d1_1, d1_2, d1_3, d1_4, d1_5, d1_6,
@@ -9,6 +9,8 @@ LIST challengeDice =
 
 LIST challengeType = safe, dangerous
 LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
+
+VAR challengeDifficulty = 0
 VAR challengeEffort = 0
 
 // character data
@@ -33,7 +35,7 @@ VAR characterResolve = MAX_RESOLVE
     }
     
     // if we've passed the size of the dice w/o finding a match, it's a failure
-    { difficulty_level_to_check > number_of_faces:
+    { difficulty_level_to_check > MAX_DIFFICULTY:
         ~ return challengeResolution.failure
     }
     
@@ -91,7 +93,7 @@ VAR characterResolve = MAX_RESOLVE
     - number_of_dice > MAX_DICE:
         DEBUG: What are you doing? There's only {MAX_DICE} dice available.
     - number_of_dice > 0:
-        ~ temp rolled_value = RANDOM(1, number_of_faces)
+        ~ temp rolled_value = RANDOM(1, MAX_DIFFICULTY)
         
         ~ temp dice_offset = (number_of_dice * 10) + rolled_value
         ~ challengeDice += challengeDice(dice_offset)
@@ -138,7 +140,7 @@ VAR characterResolve = MAX_RESOLVE
     }
 
     ~ return false
-    
+
 === function recoverKarma()
 
     {
@@ -159,30 +161,57 @@ VAR characterResolve = MAX_RESOLVE
         ~ return false
     }
 
-=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, -> goto_failure)
+=== offerToRecoverKarma(target_difficulty, applicable_quirks)
 
+    // if you have an applicable quirk and less than max karma, offer to regain some karma
+    {
+    - target_difficulty < MAX_DIFFICULTY and applicable_quirks ? characterQuirk and characterKarma < MAX_KARMA:
+        You can recover some karma by increasing the difficulty by 1 before the check.
+        + Recover 1 karma (new difficulty: {target_difficulty + 1}).
+            ~ recoverKarma()
+            ~ challengeDifficulty++
+            ->->
+        + Continue as-is.
+            ->->
+    }
+
+    ->->
+
+=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure)
+
+    ~ challengeDifficulty = target_difficulty
+    
+    -> offerToRecoverKarma(target_difficulty, applicable_quirks) ->
+    
     ~ temp check_result = challengeResolution()
     {
         - applicable_trait == characterTrait:
-            ~ check_result = rollDice(3, target_difficulty)
+            ~ check_result = rollDice(3, challengeDifficulty)
         - applicable_concepts ? characterConcept:
-            ~ check_result = rollDice(2, target_difficulty)
+            ~ check_result = rollDice(2, challengeDifficulty)
         - else:
-            ~ check_result = rollDice(1, target_difficulty)
+            ~ check_result = rollDice(1, challengeDifficulty)
     }
     
     DEBUG: {check_result} {challengeDice}
 
     { check_result:
         - challengeResolution.criticalFailure:
-            -> goto_failure
+            ->-> goto_failure
         - challengeResolution.failure:
-            -> goto_failure
+            // if you have an applicable perk, and it would result in turning this failure to a success...
+            {
+            - characterKarma > 0 and applicable_perks ? characterPerk and (success, exceptionalSuccess) ? checkRollResults(challengeDifficulty - 1):
+                You've failed, but a little karma goes a long way.
+                + Use your {getCharacterPerkDescription(characterPerk)} (and 1 karma) to succeed.
+                    { useKarma(): ->-> }
+                + Accept failure.
+                    ->-> goto_failure
+            ->-> goto_failure
+            }
         - challengeResolution.success:
             ->->
         - challengeResolution.exceptionalSuccess:
             ->->
     }
-
-
-
+    

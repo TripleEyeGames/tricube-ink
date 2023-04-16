@@ -12,17 +12,17 @@ There are dozens of these locations scattered around the world, each built upon 
 = attemptEntry
 You can approach the facility in a variety of ways. Which do you want to try?
     * Stealth
-        -> challengeCheck (6, characterTrait.agile, (thief, techie, saboteur), -> failedEntry ) ->
+        -> challengeCheck (5, characterTrait.agile, (thief, techie, saboteur), (boosted_reflexes), (gloryhound), -> failedEntry ) ->
         You've successfully snuck through security.
         -> welcome_inside
         
     * Brute Force
-        -> challengeCheck (6, characterTrait.brawny, (samurai, wheelperson), -> failedEntry ) ->
+        -> challengeCheck (5, characterTrait.brawny, (samurai, wheelperson), (cyberarm), (foolhardy), -> failedEntry ) ->
         You've successfully crashed through security.
         -> welcome_inside
 
     * Deception
-        -> challengeCheck (6, characterTrait.crafty, (hustler, hacker), -> failedEntry ) ->
+        -> challengeCheck (5, characterTrait.crafty, (hustler, hacker), (full_spectrum_vision), (inquisitive), -> failedEntry ) ->
         You've successfully talked your way through security.
         -> welcome_inside
 

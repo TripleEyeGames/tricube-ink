@@ -88,7 +88,7 @@ LIST characterQuirk = inquisitive, cynical, obnoxious, foolhardy, brooding, call
     - callous:
         ~ return "Callous"
     - gloryhound:
-        ~ return "Narcissistic"
+        ~ return "Glory-Seeking"
     - else:
         ~ return "!! Unknown Quirks !!"
     }
@@ -108,9 +108,9 @@ We should put the one-pager introduction, if we share this with other people. I'
 
 = pickCharacterCreationType
 How do you want to make your character?
-    * [Randomly generate my character.]
+    + [Randomly generate my character.]
         -> doRandomGeneration
-    * [Allow me to create my character, please.]
+    + [Allow me to create my character, please.]
         -> doCharacterConfiguration
 
 = doRandomGeneration
@@ -208,7 +208,7 @@ Finally, what quirk does your character have?
 + [Callous]
     ~ characterQuirk = callous
     -> verifyPlayerChoices
-+ [Narcissistic]
++ [Glory-seeking]
     ~ characterQuirk = gloryhound
     -> verifyPlayerChoices
 

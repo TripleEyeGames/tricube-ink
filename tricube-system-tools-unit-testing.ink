@@ -1,10 +1,17 @@
 INCLUDE tricube-system-tools.ink
 
-// this list is part of the character definition for your story
-// so we need to add it here to test the core functions
+// these list is part of the character definition for your story
+// we need to add it here to test the core functions
 LIST characterConcept = test, data, required, here
+LIST characterPerk = test, data, required, here
+LIST characterQuirk = test, data, required, here
 
 -> unitTests
+
+// this function is part of the character definition for your story
+// we need to add it here to test the core functions
+=== function getCharacterPerkDescription(character_perk)
+    ~ return character_perk
 
 === getRollResolutionRecursiveTests
     // crit fail
@@ -197,7 +204,7 @@ LIST characterConcept = test, data, required, here
 
 === unitTests ===
     // which test suite do you want to run?
-    <h1> ROLL TESTS - VISUALLY CONFIRM </h1>
+    <h1> ROLL TESTS </h1>
     -> rollDiceTests ->
     
     <h1> ROLL RESOLUTION TESTS </h1>
