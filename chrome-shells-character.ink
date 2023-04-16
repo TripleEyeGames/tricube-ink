@@ -2,6 +2,7 @@ INCLUDE tricube-system-tools.ink
 
 // character data
 
+LIST characterTrait = agile, brawny, crafty
 LIST characterConcept = samurai, hustler, thief, hacker, techie, wheelperson, saboteur
 LIST characterPerk = cyberarm, boosted_reflexes, smartgun, custom_cyberdeck, microdrones, full_spectrum_vision, retractable_claws
 LIST characterQuirk = inquisitive, cynical, obnoxious, foolhardy, brooding, callous, gloryhound

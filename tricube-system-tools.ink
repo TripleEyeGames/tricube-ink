@@ -16,9 +16,9 @@ VAR challengeEffort = 0
 // character data
 
 CONST MAX_KARMA = 3
-CONST MAX_RESOLVE = 3
-LIST characterTrait = agile, brawny, crafty
 VAR characterKarma = MAX_KARMA
+
+CONST MAX_RESOLVE = 3
 VAR characterResolve = MAX_RESOLVE
 
 //*******************************

@@ -2,9 +2,10 @@ INCLUDE tricube-system-tools.ink
 
 // these list is part of the character definition for your story
 // we need to add it here to test the core functions
-LIST characterConcept = test, data, required, here
-LIST characterPerk = test, data, required, here
-LIST characterQuirk = test, data, required, here
+LIST characterTrait = trait1, trait2, trait3
+LIST characterConcept = concept1, concept2, concept3
+LIST characterPerk = perk1, perk2, perk3
+LIST characterQuirk = quirk1, quirk2, quirk3
 
 -> unitTests
 
@@ -202,21 +203,56 @@ LIST characterQuirk = test, data, required, here
     
     ->->
 
+=== offerToRecoverKarmaTests
+
+    // skip - max difficulty
+    ~ challengeDifficulty = MAX_DIFFICULTY
+    ~ characterKarma = 1
+    ~ characterQuirk = quirk1
+    -> offerToRecoverKarma(challengeDifficulty, (quirk1)) ->
+    offerToRecoverKarma - max difficulty skip - {challengeDifficulty == MAX_DIFFICULTY and characterKarma == 1:✔|<b>!!!</b>}
+
+    // skip - no quirk
+    ~ challengeDifficulty = 2
+    ~ characterKarma = 1
+    ~ characterQuirk = quirk2
+    -> offerToRecoverKarma(challengeDifficulty, (quirk1)) ->
+    offerToRecoverKarma - no quirk skip - {challengeDifficulty == 2 and characterKarma == 1:✔|<b>!!!</b>}
+
+    // skip - max difficulty
+    ~ challengeDifficulty = 2
+    ~ characterKarma = MAX_KARMA
+    ~ characterQuirk = quirk1
+    -> offerToRecoverKarma(challengeDifficulty, (quirk1)) ->
+    offerToRecoverKarma - max karma skip - {challengeDifficulty == 2 and characterKarma == MAX_KARMA:✔|<b>!!!</b>}
+
+    // offer made
+    ~ challengeDifficulty = 2
+    ~ characterKarma = 2
+    ~ characterQuirk = quirk1
+    -> offerToRecoverKarma(challengeDifficulty, (quirk1)) ->
+    offerToRecoverKarma - ^ there should be text displayed up here.
+
+    ->->
+    
 === unitTests ===
     // which test suite do you want to run?
-    <h1> ROLL TESTS </h1>
+    <h1> ROLL TESTS</h1>
     -> rollDiceTests ->
     
-    <h1> ROLL RESOLUTION TESTS </h1>
+    <h1> ROLL RESOLUTION TESTS</h1>
     -> getRollResolutionRecursiveTests ->
     
-    <h1> CHECK ROLL RESULTS TESTS </h1>
+    <h1> CHECK ROLL RESULTS TESTS</h1>
     -> checkRollResultsTests ->
     
-    <h1> KARMA TESTS </h1>
+    <h1> KARMA TESTS</h1>
     -> karmaTests ->
     
-    <h1> RESOLVE TESTS </h1>
+    <h1> RESOLVE TESTS</h1>
     -> resolveTests ->
+    
+    <h1>CHALLENGE TESTS</h1>
+    -> offerToRecoverKarmaTests ->
     
     -> END
