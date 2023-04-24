@@ -155,7 +155,7 @@ LIST characterQuirk = quirk1, quirk2, quirk3
     
     ->->
 
-=== karmaTests
+=== useKarmaTests
 
     // use once - failure
     ~ characterKarma = 0
@@ -209,50 +209,82 @@ LIST characterQuirk = quirk1, quirk2, quirk3
     ~ challengeDifficulty = MAX_DIFFICULTY
     ~ characterKarma = 1
     ~ characterQuirk = quirk1
-    -> offerToRecoverKarma(challengeDifficulty, (quirk1)) ->
+    -> offerToRecoverKarma((quirk1)) ->
     offerToRecoverKarma - max difficulty skip - {challengeDifficulty == MAX_DIFFICULTY and characterKarma == 1:✔|<b>!!!</b>}
 
     // skip - no quirk
     ~ challengeDifficulty = 2
     ~ characterKarma = 1
     ~ characterQuirk = quirk2
-    -> offerToRecoverKarma(challengeDifficulty, (quirk1)) ->
+    -> offerToRecoverKarma((quirk1)) ->
     offerToRecoverKarma - no quirk skip - {challengeDifficulty == 2 and characterKarma == 1:✔|<b>!!!</b>}
 
     // skip - max difficulty
     ~ challengeDifficulty = 2
     ~ characterKarma = MAX_KARMA
     ~ characterQuirk = quirk1
-    -> offerToRecoverKarma(challengeDifficulty, (quirk1)) ->
+    -> offerToRecoverKarma((quirk1)) ->
     offerToRecoverKarma - max karma skip - {challengeDifficulty == 2 and characterKarma == MAX_KARMA:✔|<b>!!!</b>}
 
-    // offer made
-    ~ challengeDifficulty = 2
-    ~ characterKarma = 2
-    ~ characterQuirk = quirk1
-    -> offerToRecoverKarma(challengeDifficulty, (quirk1)) ->
-    offerToRecoverKarma - ^ there should be text displayed up here.
+    // quirk offer made
+    //~ challengeDifficulty = 2
+    //~ characterKarma = 2
+    //~ characterQuirk = quirk1
+    //-> offerToRecoverKarma((quirk1)) ->
+    //offerToRecoverKarma - quirk offer made - ^ there should be text displayed up here.
 
+    ->->
+    
+=== challengeCheckTests
+
+    // I'm tired but I want to test this thing
+    ~ characterKarma = MAX_KARMA
+    ~ characterTrait = trait1
+    ~ characterConcept = concept1
+    ~ characterPerk = perk1
+    ~ characterQuirk = quirk1
+    challengeCheck(2)
+    -> challengeCheck (2, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
+    challengeCheck(3)
+    -> challengeCheck (3, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
+    challengeCheck(4)
+    -> challengeCheck (4, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
+    challengeCheck(5)
+    -> challengeCheck (5, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
+    challengeCheck(6)
+    -> challengeCheck (6, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
+
+    The challenge succeeded!
+    -> challenge_check_done
+    
+    = challenge_check_failure
+    A challenge was failed.
+    -> challenge_check_done
+    
+    = challenge_check_done
     ->->
     
 === unitTests ===
     // which test suite do you want to run?
-    <h1> ROLL TESTS</h1>
+    <h1>ROLL TESTS</h1>
     -> rollDiceTests ->
     
-    <h1> ROLL RESOLUTION TESTS</h1>
+    <h1>ROLL RESOLUTION TESTS</h1>
     -> getRollResolutionRecursiveTests ->
     
-    <h1> CHECK ROLL RESULTS TESTS</h1>
+    <h1>CHECK ROLL RESULTS TESTS</h1>
     -> checkRollResultsTests ->
     
-    <h1> KARMA TESTS</h1>
-    -> karmaTests ->
+    <h1>USE KARMA TESTS</h1>
+    -> useKarmaTests ->
     
-    <h1> RESOLVE TESTS</h1>
+    <h1>RESOLVE TESTS</h1>
     -> resolveTests ->
     
-    <h1>CHALLENGE TESTS</h1>
+    <h1>RECOVER KARMA TESTS</h1>
     -> offerToRecoverKarmaTests ->
+    
+    <h1>CHALLENGE CHECKS</h1>
+    -> challengeCheckTests ->
     
     -> END

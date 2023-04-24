@@ -11,7 +11,9 @@ LIST challengeType = safe, dangerous
 LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 
 VAR challengeDifficulty = 0
-VAR challengeEffort = 0
+
+CONST MAX_EFFORT = 30
+VAR challengeEffortProgress = 0
 
 // character data
 
@@ -53,6 +55,21 @@ VAR characterResolve = MAX_RESOLVE
             ~ return getRollResolutionRecursive(which_dice, difficulty_level_to_check + 1)
     }
 
+=== function countSuccesses(difficulty)
+    ~ temp number_of_successes = 0
+    { challengeDice ? d1 && getRollResolutionRecursive(d1, difficulty) == challengeResolution.success:
+        ~ number_of_successes++
+    }
+    { challengeDice ? d2 && getRollResolutionRecursive(d2, difficulty) == challengeResolution.success:
+        ~ number_of_successes++
+    }
+    { challengeDice ? d3 && getRollResolutionRecursive(d3, difficulty) == challengeResolution.success:
+        ~ number_of_successes++
+    }
+    
+    ~ return number_of_successes
+
+
 === function checkRollResults(difficulty)
 
     ~ temp combined_roll_results = ()
@@ -68,16 +85,7 @@ VAR characterResolve = MAX_RESOLVE
     }
     
     // count successes
-    ~ temp number_of_successes = 0
-    { challengeDice ? d1 && getRollResolutionRecursive(d1, difficulty) == challengeResolution.success:
-        ~ number_of_successes++
-    }
-    { challengeDice ? d2 && getRollResolutionRecursive(d2, difficulty) == challengeResolution.success:
-        ~ number_of_successes++
-    }
-    { challengeDice ? d3 && getRollResolutionRecursive(d3, difficulty) == challengeResolution.success:
-        ~ number_of_successes++
-    }
+    ~ temp number_of_successes = countSuccesses(difficulty)
 
     // check for exceptional success
     { number_of_successes:
@@ -161,13 +169,35 @@ VAR characterResolve = MAX_RESOLVE
         ~ return false
     }
 
-=== offerToRecoverKarma(target_difficulty, applicable_quirks)
+=== challengeSetup(target_difficulty, applicable_quirks)
+
+    // setting base values for internal checks
+    ~ challengeResolution = ()
+
+    ~ challengeDifficulty = target_difficulty
+    
+    // difficulty can be increased (if the player opts-in)
+    -> offerToRecoverKarma(applicable_quirks) ->
+
+    ->->
+
+=== offerToRecoverKarma(applicable_quirks)
+
+    {
+        // short circuit if the challenge cannot be made more difficult
+        - challengeDifficulty >= MAX_DIFFICULTY:
+            ->->
+            
+        // short circuit if the character already has max karma
+        - characterKarma >= MAX_KARMA:
+            ->->
+    }
 
     // if you have an applicable quirk and less than max karma, offer to regain some karma
     {
-    - target_difficulty < MAX_DIFFICULTY and applicable_quirks ? characterQuirk and characterKarma < MAX_KARMA:
-        You can recover some karma by increasing the difficulty by 1 before the check.
-        + Recover 1 karma (new difficulty: {target_difficulty + 1}).
+     - LIST_COUNT(applicable_quirks) > 0 and applicable_quirks ? characterQuirk:
+        You can recover some karma by being {characterQuirk} to increase the challenge difficulty by 1.
+        + Recover 1 karma (new difficulty: {challengeDifficulty + 1}).
             ~ recoverKarma()
             ~ challengeDifficulty++
             ->->
@@ -177,41 +207,129 @@ VAR characterResolve = MAX_RESOLVE
 
     ->->
 
-=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure)
+=== doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks)
 
-    ~ challengeDifficulty = target_difficulty
-    
-    -> offerToRecoverKarma(target_difficulty, applicable_quirks) ->
-    
-    ~ temp check_result = challengeResolution()
+    ~temp dice_to_roll = 1
     {
         - applicable_trait == characterTrait:
-            ~ check_result = rollDice(3, challengeDifficulty)
+            ~ dice_to_roll = 3
         - applicable_concepts ? characterConcept:
-            ~ check_result = rollDice(2, challengeDifficulty)
-        - else:
-            ~ check_result = rollDice(1, challengeDifficulty)
+            ~ dice_to_roll = 2
     }
-    
-    DEBUG: {check_result} {challengeDice}
 
-    { check_result:
-        - challengeResolution.criticalFailure:
-            ->-> goto_failure
-        - challengeResolution.failure:
+    // DO THE CHECK
+    ~ challengeResolution = rollDice(dice_to_roll, challengeDifficulty)
+    
+    // DEBUG: {challengeResolution}
+    
+    { challengeResolution:
+        - criticalFailure:
+            <> Critical Failure...
+            ->->
+
+        - failure:
             // if you have an applicable perk, and it would result in turning this failure to a success...
             {
             - characterKarma > 0 and applicable_perks ? characterPerk and (success, exceptionalSuccess) ? checkRollResults(challengeDifficulty - 1):
                 You've failed, but a little karma goes a long way.
-                + Use your {getCharacterPerkDescription(characterPerk)} (and 1 karma) to succeed.
-                    { useKarma(): ->-> }
-                + Accept failure.
-                    ->-> goto_failure
-            ->-> goto_failure
+                + [Use your {getCharacterPerkDescription(characterPerk)} (and 1 karma) to succeed.]
+                    {
+                        - useKarma():
+                            ~ challengeResolution = success
+                            <> Success!
+                            ->->
+                        - else:
+                            <> Failure...
+                            ->->
+                    }
+                + [Accept failure.]
+                    <> Failure...
+                    ->->
+            - else:
+                <> Failure...
+                ->->
             }
-        - challengeResolution.success:
+
+        - success:
+            <> Success!
             ->->
-        - challengeResolution.exceptionalSuccess:
+
+        - exceptionalSuccess:
+            <> Exceptional Success!
             ->->
     }
     
+    ->->
+
+=== challengeCheckWithEffortRecursive(recursion_depth, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks)
+
+    // DEBUG: effortChallengeRecursive({recursion_depth}, {required_effort}, {maximum_tries}, {applicable_trait}, {applicable_concepts}, {applicable_perks})
+    // DEBUG: {challengeEffortProgress} >= {required_effort}
+    
+    {
+        // we're done!
+        - challengeEffortProgress >= required_effort:
+            ->->
+
+        // short circuit recursion if there's a limit set
+        - maximum_tries > 0 && recursion_depth > maximum_tries:
+            ->->
+            
+        // short circuit if we reach a maximum limit
+        - recursion_depth >= MAX_EFFORT:
+            ->->
+    }
+    
+    // do the check
+    -> doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
+    
+    // advance our counter on successes
+    { challengeResolution:
+    - success:
+        ~ challengeEffortProgress++
+    - exceptionalSuccess:
+        ~ challengeEffortProgress = challengeEffortProgress + countSuccesses(challengeDifficulty)
+    }
+    
+    // continue recursive loop
+    -> challengeCheckWithEffortRecursive(1 + recursion_depth, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks) ->
+
+    ->->
+
+=== challengeCheckWithEffort(required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure, -> goto_crit_failure)
+
+    // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
+    -> challengeSetup(target_difficulty, applicable_quirks) ->
+
+    // effort counts up from 0 to required_effort threshold
+    ~ challengeEffortProgress = 0
+    
+    // 1 is a magic number - this is the first time this recursive method is being called
+    -> challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks) ->
+    
+    {
+    - challengeEffortProgress == 0:
+        ->-> goto_crit_failure
+    - challengeEffortProgress < required_effort:
+        ->-> goto_failure
+    }
+
+    ->->
+
+=== challengeCheck (target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure, -> goto_crit_failure)
+
+    // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
+    -> challengeSetup(target_difficulty, applicable_quirks) ->
+
+    // do the roll, considering concepts and perks
+    -> doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
+    
+    // short circuit if the resolution is not favorable
+    { challengeResolution:
+    - criticalFailure:
+        ->-> goto_crit_failure
+    - failure:
+        ->-> goto_failure
+    }
+
+    ->->
