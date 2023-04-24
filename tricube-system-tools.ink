@@ -12,7 +12,7 @@ LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 
 VAR challengeDifficulty = 0
 
-CONST MAX_EFFORT = 30
+CONST MAX_EFFORT_TRIES = 30
 VAR challengeEffortProgress = 0
 
 // character data
@@ -276,7 +276,7 @@ VAR characterResolve = MAX_RESOLVE
             ->->
             
         // short circuit if we reach a maximum limit
-        - recursion_depth >= MAX_EFFORT:
+        - recursion_depth >= MAX_EFFORT_TRIES:
             ->->
     }
     
