@@ -1,5 +1,7 @@
 INCLUDE chrome-shells-character.ink
 
+LIST storyComplications = securityOnAlert
+
 -> characterCreation ->
 -> startTheJob
 

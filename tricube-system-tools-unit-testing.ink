@@ -7,7 +7,11 @@ LIST characterConcept = concept1, concept2, concept3
 LIST characterPerk = perk1, perk2, perk3
 LIST characterQuirk = quirk1, quirk2, quirk3
 
--> unitTests
+LIST storyComplications = complication1, complication2, complication3
+
+You Ready?
+    * [Yeah, Let's go!]
+        -> unitTests
 
 // this function is part of the character definition for your story
 // we need to add it here to test the core functions
@@ -203,67 +207,227 @@ LIST characterQuirk = quirk1, quirk2, quirk3
     
     ->->
 
-=== offerToRecoverKarmaTests
+=== offerToApplyQuirkOnChallengeRollTests
+- These tests need to be run manually:
+-> offerToApplyQuirkOnChallengeRollTestsLoop
 
+=== offerToApplyQuirkOnChallengeRollTestsLoop
     // skip - max difficulty
-    ~ challengeDifficulty = MAX_DIFFICULTY
-    ~ characterKarma = 1
-    ~ characterQuirk = quirk1
-    -> offerToRecoverKarma((quirk1)) ->
-    offerToRecoverKarma - max difficulty skip - {challengeDifficulty == MAX_DIFFICULTY and characterKarma == 1:✔|<b>!!!</b>}
-
-    // skip - no quirk
-    ~ challengeDifficulty = 2
-    ~ characterKarma = 1
-    ~ characterQuirk = quirk2
-    -> offerToRecoverKarma((quirk1)) ->
-    offerToRecoverKarma - no quirk skip - {challengeDifficulty == 2 and characterKarma == 1:✔|<b>!!!</b>}
-
-    // skip - max difficulty
-    ~ challengeDifficulty = 2
-    ~ characterKarma = MAX_KARMA
-    ~ characterQuirk = quirk1
-    -> offerToRecoverKarma((quirk1)) ->
-    offerToRecoverKarma - max karma skip - {challengeDifficulty == 2 and characterKarma == MAX_KARMA:✔|<b>!!!</b>}
-
-    // quirk offer made
-    //~ challengeDifficulty = 2
-    //~ characterKarma = 2
-    //~ characterQuirk = quirk1
-    //-> offerToRecoverKarma((quirk1)) ->
-    //offerToRecoverKarma - quirk offer made - ^ there should be text displayed up here.
-
-    ->->
+    * [Max Difficulty Check]
+        ~ challengeDifficulty = MAX_DIFFICULTY
+        ~ challengeDifficultyModifier = 0
+        ~ challengeQuirkPayout = ()
     
+        ~ characterKarma = 1
+        ~ characterResolve = MAX_RESOLVE
+        ~ characterQuirk = quirk1
+        
+        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        offerToApplyQuirkToChallengeRoll - max difficulty skip - {challengeDifficultyModifier == 0 and not challengeQuirkPayout:✔|<b>!!!</b>}
+        
+        -> offerToApplyQuirkOnChallengeRollTestsLoop
+
+    // skip - quirk miss
+    * [Quirk List Miss Check]
+        ~ challengeDifficulty = 2
+        ~ challengeDifficultyModifier = 0
+        ~ challengeQuirkPayout = ()
+    
+        ~ characterKarma = 1
+        ~ characterResolve = 1
+        ~ characterQuirk = quirk2
+        
+        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        offerToApplyQuirkToChallengeRoll - quirk miss skip - {challengeDifficultyModifier == 0 and not challengeQuirkPayout:✔|<b>!!!</b>}
+        
+        -> offerToApplyQuirkOnChallengeRollTestsLoop
+
+    // skip - max karma & resolve
+    * [Max Karma and Resolve Check]
+        ~ challengeDifficulty = 2
+        ~ challengeDifficultyModifier = 0
+        ~ challengeQuirkPayout = ()
+    
+        ~ characterKarma = MAX_KARMA
+        ~ characterResolve = MAX_RESOLVE
+        ~ characterQuirk = quirk1
+        
+        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        offerToApplyQuirkToChallengeRoll - max karma & resolve skip - {challengeDifficultyModifier == 0 and not challengeQuirkPayout:✔|<b>!!!</b>}
+        
+        -> offerToApplyQuirkOnChallengeRollTestsLoop
+
+    // quirk offer made - karma
+    * [Accept Karma Bump Check]
+        ~ challengeDifficulty = 2
+        ~ challengeDifficultyModifier = 0
+        ~ challengeQuirkPayout = ()
+    
+        ~ characterKarma = 1
+        ~ characterResolve = MAX_RESOLVE
+        ~ characterQuirk = quirk1
+        
+        offerToApplyQuirkToChallengeRoll - karma offer made - please pick +1 Karma
+        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficultyModifier == 1 and challengeQuirkPayout == karma:✔|<b>!!!</b>}
+        
+        -> offerToApplyQuirkOnChallengeRollTestsLoop
+
+    // quirk offer made - resolve
+    * [Accept Resolve Bump Check]
+        ~ challengeDifficulty = 2
+        ~ challengeDifficultyModifier = 0
+        ~ challengeQuirkPayout = ()
+    
+        ~ characterKarma = MAX_KARMA
+        ~ characterResolve = 2
+        ~ characterQuirk = quirk1
+        
+        offerToApplyQuirkToChallengeRoll - resolve offer made - please pick +1 Resolve
+        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficultyModifier == 1 and challengeQuirkPayout == resolve:✔|<b>!!!</b>}
+        
+        -> offerToApplyQuirkOnChallengeRollTestsLoop
+
+    * [Finish Quirk Tests]
+        ->->
+
+=== offerToApplyComplicationTests
+- These tests need to be run manually:
+-> offerToApplyComplicationTestsLoop
+
+=== offerToApplyComplicationTestsLoop
+    // skip - max karma
+    * [Max Karma Check]
+        ~ characterKarma = MAX_KARMA
+        ~ characterQuirk = quirk1
+        
+        ~ storyComplications = ()
+        
+        -> offerToApplyComplication(complication1,quirk1) ->
+        offerToApplyComplication - max karma skip - {characterKarma == MAX_KARMA and storyComplications !? complication1:✔|<b>!!!</b>}
+        
+        -> offerToApplyComplicationTestsLoop
+    
+    // skip - complication already set
+    * [Duplicate Complication Check]
+        ~ characterKarma = 1
+        ~ characterQuirk = quirk2
+        
+        ~ storyComplications = complication1
+        
+        -> offerToApplyComplication(complication1,quirk2) ->
+        offerToApplyComplication - duplicate complication skip - {characterKarma == 1 and storyComplications ? complication1:✔|<b>!!!</b>}
+        
+        -> offerToApplyComplicationTestsLoop
+    
+    // complication offer made
+    * [Accept Complication Check]
+        ~ characterKarma = 1
+        ~ characterQuirk = quirk3
+        
+        ~ storyComplications = complication2
+        
+        -> offerToApplyComplication(complication3,quirk3) ->
+        offerToApplyComplication - complication offer accepted - {characterKarma == 2 and storyComplications ? complication3:✔|<b>!!!</b>}
+        
+        -> offerToApplyComplicationTestsLoop
+    
+    * [Finish Complications Tests]
+        ->->
+
 === challengeCheckTests
+- These tests need to be run manually:
+-> challengeCheckTestsLoop
 
-    // I'm tired but I want to test this thing
-    ~ characterKarma = MAX_KARMA
-    ~ characterTrait = trait1
-    ~ characterConcept = concept1
-    ~ characterPerk = perk1
-    ~ characterQuirk = quirk1
-    challengeCheck(2)
-    -> challengeCheck (2, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
-    challengeCheck(3)
-    -> challengeCheck (3, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
-    challengeCheck(4)
-    -> challengeCheck (4, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
-    challengeCheck(5)
-    -> challengeCheck (5, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
-    challengeCheck(6)
-    -> challengeCheck (6, (), (), (), (), -> challenge_check_failure, -> challenge_check_failure) ->
+=== challengeCheckTestsLoop
+// The presets for every challenge test
+~ characterKarma = MAX_KARMA
+~ characterResolve = MAX_RESOLVE
+~ characterTrait = trait3
+~ characterConcept = concept2
+~ characterPerk = perk1
+~ characterQuirk = quirk2
 
-    The challenge succeeded!
-    -> challenge_check_done
-    
-    = challenge_check_failure
-    A challenge was failed.
-    -> challenge_check_done
-    
-    = challenge_check_done
-    ->->
-    
+~ storyComplications = ()
+
+    + [1 Die, 2 Difficulty, No Perk Match]
+        challengeCheck(2) <>
+        -> challengeCheck (2, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 3 Difficulty, No Perk Match]
+        challengeCheck(3) <>
+        -> challengeCheck (3, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 4 Difficulty, No Perk Match]
+        challengeCheck(4) <>
+        -> challengeCheck (4, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 5 Difficulty, No Perk Match]
+        challengeCheck(5) <>
+        -> challengeCheck (5, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 6 Difficulty, No Perk Match]
+        challengeCheck(6) <>
+        -> challengeCheck (6, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 2 Difficulty, Perk Match]
+        challengeCheck(2) <>
+        -> challengeCheck (2, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 3 Difficulty, Perk Match]
+        challengeCheck(3) <>
+        -> challengeCheck (3, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 4 Difficulty, Perk Match]
+        challengeCheck(4) <>
+        -> challengeCheck (4, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 5 Difficulty, Perk Match]
+        challengeCheck(5) <>
+        -> challengeCheck (5, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    + [1 Die, 6 Difficulty, Perk Match]
+        challengeCheck(6) <>
+        -> challengeCheck (6, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        
+        The challenge succeeded!
+        -> challengeCheckTestsLoop
+
+    * [Finish Challenge Check Tests]
+        ->->
+
+=== challengeCheckTestsFailure
+    The challenge failed.
+    -> challengeCheckTestsLoop
+
 === unitTests ===
     // which test suite do you want to run?
     <h1>ROLL TESTS</h1>
@@ -281,8 +445,11 @@ LIST characterQuirk = quirk1, quirk2, quirk3
     <h1>RESOLVE TESTS</h1>
     -> resolveTests ->
     
-    <h1>RECOVER KARMA TESTS</h1>
-    -> offerToRecoverKarmaTests ->
+    <h1>APPLY QUIRK TESTS</h1>
+    -> offerToApplyQuirkOnChallengeRollTests ->
+    
+    <h1>APPLY COMPLICATIONS TESTS</h1>
+    -> offerToApplyComplicationTests ->
     
     <h1>CHALLENGE CHECKS</h1>
     -> challengeCheckTests ->

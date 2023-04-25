@@ -9,8 +9,10 @@ LIST challengeDice =
 
 LIST challengeType = safe, dangerous
 LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
+LIST challengeQuirkPayout = karma, resolve
 
 VAR challengeDifficulty = 0
+VAR challengeDifficultyModifier = 0
 
 CONST MAX_EFFORT_TRIES = 30
 VAR challengeEffortProgress = 0
@@ -68,7 +70,6 @@ VAR characterResolve = MAX_RESOLVE
     }
     
     ~ return number_of_successes
-
 
 === function checkRollResults(difficulty)
 
@@ -169,42 +170,105 @@ VAR characterResolve = MAX_RESOLVE
         ~ return false
     }
 
-=== challengeSetup(target_difficulty, applicable_quirks)
+=== function giveQuirkPayout()
 
-    // setting base values for internal checks
-    ~ challengeResolution = ()
+    {
+        - challengeQuirkPayout == karma && characterKarma < MAX_KARMA:
+            ~ recoverKarma()
+            ~ challengeQuirkPayout = ()
+        - challengeQuirkPayout == resolve && characterResolve < MAX_RESOLVE: 
+            ~ recoverResolve()
+            ~ challengeQuirkPayout = ()
+    }
 
-    ~ challengeDifficulty = target_difficulty
+    ~ return
+
+=== offerToApplyComplication(optional_complication, applicable_quirks)
+
+    {
+        // short circuit if the complication has already been applied
+        - storyComplications ? optional_complication:
+            ->->
+
+        // short circuit if the character already has max karma
+        - characterKarma >= MAX_KARMA:
+            ->->
+    }
     
-    // difficulty can be increased (if the player opts-in)
-    -> offerToRecoverKarma(applicable_quirks) ->
+    {
+    - LIST_COUNT(applicable_quirks) > 0 and applicable_quirks ? characterQuirk:
+        You can recover some karma by being {characterQuirk} and taking on {optional_complication}.
+            + {characterKarma < MAX_KARMA} [Take the complication.]
+                ~ storyComplications += optional_complication
+                ~ recoverKarma()
+                ->->
+            + [Continue as-is.]
+                ->->
+            -
+                ->->
+    }
 
-    ->->
-
-=== offerToRecoverKarma(applicable_quirks)
+=== offerToApplyQuirkToChallengeRoll(applicable_quirks)
 
     {
         // short circuit if the challenge cannot be made more difficult
         - challengeDifficulty >= MAX_DIFFICULTY:
             ->->
-            
-        // short circuit if the character already has max karma
-        - characterKarma >= MAX_KARMA:
+
+        // short circuit if the character already has max karma/resolve
+        - characterKarma >= MAX_KARMA && characterResolve >= MAX_RESOLVE:
             ->->
     }
 
     // if you have an applicable quirk and less than max karma, offer to regain some karma
     {
-     - LIST_COUNT(applicable_quirks) > 0 and applicable_quirks ? characterQuirk:
-        You can recover some karma by being {characterQuirk} to increase the challenge difficulty by 1.
-        + Recover 1 karma (new difficulty: {challengeDifficulty + 1}).
-            ~ recoverKarma()
-            ~ challengeDifficulty++
-            ->->
-        + Continue as-is.
-            ->->
+    - LIST_COUNT(applicable_quirks) > 0 and applicable_quirks ? characterQuirk:
+        You can try to recover some karma/resolve by being {characterQuirk} to increase the challenge difficulty (from {challengeDifficulty} to {challengeDifficulty + challengeDifficultyModifier + 1}).
+            + {characterKarma < MAX_KARMA} [Recover 1 karma.]
+                ~ challengeDifficultyModifier++
+                ~ challengeQuirkPayout = karma
+                ->->
+            + {characterResolve < MAX_RESOLVE} [Recover 1 resolve.]
+                ~ challengeDifficultyModifier++
+                ~ challengeQuirkPayout = resolve
+                ->->
+            + [Continue as-is.]
+                ->->
+            -
+                ->->
     }
 
+=== challengeRollSetup(target_difficulty, applicable_quirks)
+
+    // setting base values for internal checks
+    ~ challengeResolution = ()
+    ~ challengeQuirkPayout = ()
+
+    ~ challengeDifficulty = target_difficulty
+    ~ challengeDifficultyModifier = 0
+    
+    // difficulty can be increased (if the player opts-in)
+    -> offerToApplyQuirkToChallengeRoll(applicable_quirks) ->
+    
+    ->->
+
+=== offerToUseKarmaInChallengeRoll()
+
+    - You've failed, but a little karma goes a long way.
+        + [Use your {getCharacterPerkDescription(characterPerk)} (and 1 karma) to succeed.]
+            {
+                - useKarma():
+                    ~ challengeResolution = success
+                    ~ giveQuirkPayout()
+                    <> - {challengeDice} - Success!
+                    ->->
+                - else:
+                    <> - {challengeDice} - Failure...
+                    ->->
+            }
+        + [Accept failure.]
+            <> - {challengeDice} - Failure...
+            ->->
     ->->
 
 === doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks)
@@ -224,38 +288,27 @@ VAR characterResolve = MAX_RESOLVE
     
     { challengeResolution:
         - criticalFailure:
-            <> Critical Failure...
+            <> - {challengeDice} - Critical Failure...
             ->->
 
         - failure:
             // if you have an applicable perk, and it would result in turning this failure to a success...
             {
             - characterKarma > 0 and applicable_perks ? characterPerk and (success, exceptionalSuccess) ? checkRollResults(challengeDifficulty - 1):
-                You've failed, but a little karma goes a long way.
-                + [Use your {getCharacterPerkDescription(characterPerk)} (and 1 karma) to succeed.]
-                    {
-                        - useKarma():
-                            ~ challengeResolution = success
-                            <> Success!
-                            ->->
-                        - else:
-                            <> Failure...
-                            ->->
-                    }
-                + [Accept failure.]
-                    <> Failure...
-                    ->->
+                -> offerToUseKarmaInChallengeRoll ->
             - else:
-                <> Failure...
+                <> - {challengeDice} - Failure...
                 ->->
             }
 
         - success:
-            <> Success!
+            ~ giveQuirkPayout()
+            <> - {challengeDice} - Success!
             ->->
 
         - exceptionalSuccess:
-            <> Exceptional Success!
+            ~ giveQuirkPayout()
+            <> - {challengeDice} - Exceptional Success!
             ->->
     }
     
@@ -299,7 +352,7 @@ VAR characterResolve = MAX_RESOLVE
 === challengeCheckWithEffort(required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure, -> goto_crit_failure)
 
     // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
-    -> challengeSetup(target_difficulty, applicable_quirks) ->
+    -> challengeRollSetup(target_difficulty, applicable_quirks) ->
 
     // effort counts up from 0 to required_effort threshold
     ~ challengeEffortProgress = 0
@@ -319,7 +372,7 @@ VAR characterResolve = MAX_RESOLVE
 === challengeCheck (target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure, -> goto_crit_failure)
 
     // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
-    -> challengeSetup(target_difficulty, applicable_quirks) ->
+    -> challengeRollSetup(target_difficulty, applicable_quirks) ->
 
     // do the roll, considering concepts and perks
     -> doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
