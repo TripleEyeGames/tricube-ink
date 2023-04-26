@@ -9,9 +9,8 @@ LIST characterQuirk = quirk1, quirk2, quirk3
 
 LIST storyComplications = complication1, complication2, complication3
 
-You Ready?
-    * [Yeah, Let's go!]
-        -> unitTests
+Which test do you want to run?
+-> unitTests ->
 
 // this function is part of the character definition for your story
 // we need to add it here to test the core functions
@@ -27,7 +26,7 @@ You Ready?
     // fail
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_2)
-    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 3: {getRollResolutionRecursive(d1, 3) == failure:✔|<b>!!!</b>}
+    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 4: {getRollResolutionRecursive(d1, 4) == failure:✔|<b>!!!</b>}
     
     // fail
     ~ challengeDice = ()
@@ -36,8 +35,8 @@ You Ready?
     
     // success
     ~ challengeDice = ()
-    ~ challengeDice += (d1, d1_2)
-    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 2: {getRollResolutionRecursive(d1, 2) == success:✔|<b>!!!</b>}
+    ~ challengeDice += (d1, d1_4)
+    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 4: {getRollResolutionRecursive(d1, 4) == success:✔|<b>!!!</b>}
     
     // success
     ~ challengeDice = ()
@@ -107,53 +106,44 @@ You Ready?
 === rollDiceTests
     
     // 1 die
-    <tt>rollDice - 1 die vs 2: {rollDice(1, 2)} ({challengeDice})
-    <tt>...................... {rollDice(1, 2)} ({challengeDice})
-    <tt>...................... {rollDice(1, 2)} ({challengeDice})
-    <tt>rollDice - 1 die vs 3: {rollDice(1, 3)} ({challengeDice})
-    <tt>...................... {rollDice(1, 3)} ({challengeDice})
-    <tt>...................... {rollDice(1, 3)} ({challengeDice})
     <tt>rollDice - 1 die vs 4: {rollDice(1, 4)} ({challengeDice})
+    <tt>...................... {rollDice(1, 4)} ({challengeDice})
     <tt>...................... {rollDice(1, 4)} ({challengeDice})
     <tt>...................... {rollDice(1, 4)} ({challengeDice})
     <tt>rollDice - 1 die vs 5: {rollDice(1, 5)} ({challengeDice})
     <tt>...................... {rollDice(1, 5)} ({challengeDice})
     <tt>...................... {rollDice(1, 5)} ({challengeDice})
+    <tt>...................... {rollDice(1, 5)} ({challengeDice})
     <tt>rollDice - 1 die vs 6: {rollDice(1, 6)} ({challengeDice})
+    <tt>...................... {rollDice(1, 6)} ({challengeDice})
     <tt>...................... {rollDice(1, 6)} ({challengeDice})
     <tt>...................... {rollDice(1, 6)} ({challengeDice})
     
     // 2 die
-    <tt>rollDice - 2 die vs 2: {rollDice(2, 2)} ({challengeDice})
-    <tt>...................... {rollDice(2, 2)} ({challengeDice})
-    <tt>...................... {rollDice(2, 2)} ({challengeDice})
-    <tt>rollDice - 2 die vs 3: {rollDice(2, 3)} ({challengeDice})
-    <tt>...................... {rollDice(2, 3)} ({challengeDice})
-    <tt>...................... {rollDice(2, 3)} ({challengeDice})
     <tt>rollDice - 2 die vs 4: {rollDice(2, 4)} ({challengeDice})
+    <tt>...................... {rollDice(2, 4)} ({challengeDice})
     <tt>...................... {rollDice(2, 4)} ({challengeDice})
     <tt>...................... {rollDice(2, 4)} ({challengeDice})
     <tt>rollDice - 2 die vs 5: {rollDice(2, 5)} ({challengeDice})
     <tt>...................... {rollDice(2, 5)} ({challengeDice})
     <tt>...................... {rollDice(2, 5)} ({challengeDice})
+    <tt>...................... {rollDice(2, 5)} ({challengeDice})
     <tt>rollDice - 2 die vs 6: {rollDice(2, 6)} ({challengeDice})
+    <tt>...................... {rollDice(2, 6)} ({challengeDice})
     <tt>...................... {rollDice(2, 6)} ({challengeDice})
     <tt>...................... {rollDice(2, 6)} ({challengeDice})
     
     // 3 die
-    <tt>rollDice - 3 die vs 2: {rollDice(3, 2)} ({challengeDice})
-    <tt>...................... {rollDice(3, 2)} ({challengeDice})
-    <tt>...................... {rollDice(3, 2)} ({challengeDice})
-    <tt>rollDice - 3 die vs 3: {rollDice(3, 3)} ({challengeDice})
-    <tt>...................... {rollDice(3, 3)} ({challengeDice})
-    <tt>...................... {rollDice(3, 3)} ({challengeDice})
     <tt>rollDice - 3 die vs 4: {rollDice(3, 4)} ({challengeDice})
+    <tt>...................... {rollDice(3, 4)} ({challengeDice})
     <tt>...................... {rollDice(3, 4)} ({challengeDice})
     <tt>...................... {rollDice(3, 4)} ({challengeDice})
     <tt>rollDice - 3 die vs 5: {rollDice(3, 5)} ({challengeDice})
     <tt>...................... {rollDice(3, 5)} ({challengeDice})
     <tt>...................... {rollDice(3, 5)} ({challengeDice})
+    <tt>...................... {rollDice(3, 5)} ({challengeDice})
     <tt>rollDice - 3 die vs 6: {rollDice(3, 6)} ({challengeDice})
+    <tt>...................... {rollDice(3, 6)} ({challengeDice})
     <tt>...................... {rollDice(3, 6)} ({challengeDice})
     <tt>...................... {rollDice(3, 6)} ({challengeDice})
     
@@ -208,8 +198,8 @@ You Ready?
     ->->
 
 === offerToApplyQuirkOnChallengeRollTests
-- These tests need to be run manually:
--> offerToApplyQuirkOnChallengeRollTestsLoop
+    - These tests need to be run manually:
+    -> offerToApplyQuirkOnChallengeRollTestsLoop
 
 === offerToApplyQuirkOnChallengeRollTestsLoop
     // skip - max difficulty
@@ -229,7 +219,7 @@ You Ready?
 
     // skip - quirk miss
     * [Quirk List Miss Check]
-        ~ challengeDifficulty = 2
+        ~ challengeDifficulty = 4
         ~ challengeDifficultyModifier = 0
         ~ challengeQuirkPayout = ()
     
@@ -244,7 +234,7 @@ You Ready?
 
     // skip - max karma & resolve
     * [Max Karma and Resolve Check]
-        ~ challengeDifficulty = 2
+        ~ challengeDifficulty = 4
         ~ challengeDifficultyModifier = 0
         ~ challengeQuirkPayout = ()
     
@@ -259,7 +249,7 @@ You Ready?
 
     // quirk offer made - karma
     * [Accept Karma Bump Check]
-        ~ challengeDifficulty = 2
+        ~ challengeDifficulty = 4
         ~ challengeDifficultyModifier = 0
         ~ challengeQuirkPayout = ()
     
@@ -275,7 +265,7 @@ You Ready?
 
     // quirk offer made - resolve
     * [Accept Resolve Bump Check]
-        ~ challengeDifficulty = 2
+        ~ challengeDifficulty = 4
         ~ challengeDifficultyModifier = 0
         ~ challengeQuirkPayout = ()
     
@@ -289,12 +279,12 @@ You Ready?
         
         -> offerToApplyQuirkOnChallengeRollTestsLoop
 
-    * [Finish Quirk Tests]
+    + [Finish Quirk Tests]
         ->->
 
 === offerToApplyComplicationTests
-- These tests need to be run manually:
--> offerToApplyComplicationTestsLoop
+    - These tests need to be run manually:
+    -> offerToApplyComplicationTestsLoop
 
 === offerToApplyComplicationTestsLoop
     // skip - max karma
@@ -333,37 +323,23 @@ You Ready?
         
         -> offerToApplyComplicationTestsLoop
     
-    * [Finish Complications Tests]
+    + [Finished Complications Tests]
         ->->
 
 === challengeCheckTests
-- These tests need to be run manually:
--> challengeCheckTestsLoop
+    - These tests need to be run manually:
+    -> challengeCheckTestsLoop
 
 === challengeCheckTestsLoop
-// The presets for every challenge test
-~ characterKarma = MAX_KARMA
-~ characterResolve = MAX_RESOLVE
-~ characterTrait = trait3
-~ characterConcept = concept2
-~ characterPerk = perk1
-~ characterQuirk = quirk2
-
-~ storyComplications = ()
-
-    + [1 Die, 2 Difficulty, No Perk Match]
-        challengeCheck(2) <>
-        -> challengeCheck (2, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
-        
-        The challenge succeeded!
-        -> challengeCheckTestsLoop
-
-    + [1 Die, 3 Difficulty, No Perk Match]
-        challengeCheck(3) <>
-        -> challengeCheck (3, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
-        
-        The challenge succeeded!
-        -> challengeCheckTestsLoop
+    // The presets for every challenge test
+    ~ characterKarma = MAX_KARMA
+    ~ characterResolve = MAX_RESOLVE
+    ~ characterTrait = trait3
+    ~ characterConcept = concept2
+    ~ characterPerk = perk1
+    ~ characterQuirk = quirk2
+    
+    ~ storyComplications = ()
 
     + [1 Die, 4 Difficulty, No Perk Match]
         challengeCheck(4) <>
@@ -382,20 +358,6 @@ You Ready?
     + [1 Die, 6 Difficulty, No Perk Match]
         challengeCheck(6) <>
         -> challengeCheck (6, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
-        
-        The challenge succeeded!
-        -> challengeCheckTestsLoop
-
-    + [1 Die, 2 Difficulty, Perk Match]
-        challengeCheck(2) <>
-        -> challengeCheck (2, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
-        
-        The challenge succeeded!
-        -> challengeCheckTestsLoop
-
-    + [1 Die, 3 Difficulty, Perk Match]
-        challengeCheck(3) <>
-        -> challengeCheck (3, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
         
         The challenge succeeded!
         -> challengeCheckTestsLoop
@@ -421,37 +383,175 @@ You Ready?
         The challenge succeeded!
         -> challengeCheckTestsLoop
 
-    * [Finish Challenge Check Tests]
+    + [Finish Challenge Check Tests]
         ->->
 
 === challengeCheckTestsFailure
     The challenge failed.
     -> challengeCheckTestsLoop
 
+=== challengeCheckWithEffortTests
+    - These tests need to be run manually:
+    -> challengeCheckWithEffortLoop
+
+=== challengeCheckWithEffortLoop
+    // The presets for every challenge test
+    ~ characterKarma = MAX_KARMA
+    ~ characterResolve = MAX_RESOLVE
+    ~ characterTrait = trait1
+    ~ characterConcept = concept3
+    ~ characterPerk = perk2
+    ~ characterQuirk = quirk3
+    
+    ~ storyComplications = ()
+    
+    // failure cases
+    + [Too Many ({MAX_EFFORT_TRIES+1}) Tries]
+        challengeCheckWithEffort(1, {MAX_EFFORT_TRIES+1}, 4)
+        -> challengeCheckWithEffort (1, MAX_EFFORT_TRIES+1, 4, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+
+    // 1 Effort Section
+    + [1 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffort(1, 10, 4)
+        -> challengeCheckWithEffort (1, 10, 4, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+        
+    + [1 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffort(1, 10, 5)
+        -> challengeCheckWithEffort (1, 10, 5, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+        
+    + [1 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffort(1, 10, 6)
+        -> challengeCheckWithEffort (1, 10, 6, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+    
+    + [3 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffort(1, 10, 4)
+        -> challengeCheckWithEffort (1, 10, 4, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+        
+    + [3 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffort(1, 10, 5)
+        -> challengeCheckWithEffort (1, 10, 5, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+        
+    + [3 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffort(1, 10, 6)
+        -> challengeCheckWithEffort (1, 10, 6, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+    
+    // 10 Effort Section
+    + [1 Die, 10 Effort, 30 tries, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffort(10, 30, 4)
+        -> challengeCheckWithEffort (10, 30, 4, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+
+    + [1 Die, 10 Effort, 30 tries, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffort(10, 30, 5)
+        -> challengeCheckWithEffort (10, 30, 5, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+
+    + [1 Die, 10 Effort, 30 tries, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffort(10, 30, 6)
+        -> challengeCheckWithEffort (10, 30, 6, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+
+    + [3 Die, 10 Effort, 30 tries, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffort(10, 30, 4)
+        -> challengeCheckWithEffort (10, 30, 4, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+
+    + [3 Die, 10 Effort, 30 tries, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffort(10, 30, 5)
+        -> challengeCheckWithEffort (10, 30, 5, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+
+    + [3 Die, 10 Effort, 30 tries, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffort(10, 30, 6)
+        -> challengeCheckWithEffort (10, 30, 6, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        
+        The challenge succeeded!
+        -> challengeCheckWithEffortLoop
+
+    + [Finish Challenge Check Tests]
+        ->->
+
+=== challengeCheckWithEffortTimeout
+    The challenge failed.
+    -> challengeCheckWithEffortLoop
+
 === unitTests ===
     // which test suite do you want to run?
-    <h1>ROLL TESTS</h1>
-    -> rollDiceTests ->
+    * [Roll Resolution Tests]
+        <h1>ROLL RESOLUTION TESTS</h1>
+        -> getRollResolutionRecursiveTests ->
+        -> unitTests
     
-    <h1>ROLL RESOLUTION TESTS</h1>
-    -> getRollResolutionRecursiveTests ->
+    * [Check Roll Results Tests]
+        <h1>CHECK ROLL RESULTS TESTS</h1>
+        -> checkRollResultsTests ->
+        -> unitTests
     
-    <h1>CHECK ROLL RESULTS TESTS</h1>
-    -> checkRollResultsTests ->
+    * [Roll Tests]
+        <h1>ROLL TESTS</h1>
+        -> rollDiceTests ->
+        -> unitTests
     
-    <h1>USE KARMA TESTS</h1>
-    -> useKarmaTests ->
+    * [Karma Tests]
+        <h1>KARMA TESTS</h1>
+        -> useKarmaTests ->
+        -> unitTests
     
-    <h1>RESOLVE TESTS</h1>
-    -> resolveTests ->
+    * [Resolve Tests]
+        <h1>RESOLVE TESTS</h1>
+        -> resolveTests ->
+        -> unitTests
     
-    <h1>APPLY QUIRK TESTS</h1>
-    -> offerToApplyQuirkOnChallengeRollTests ->
+    * [Apply Quirk Tests]
+        <h1>APPLY QUIRK TESTS</h1>
+        -> offerToApplyQuirkOnChallengeRollTests ->
+        -> unitTests
     
-    <h1>APPLY COMPLICATIONS TESTS</h1>
-    -> offerToApplyComplicationTests ->
+    * [Apply Complications Tests]
+        <h1>APPLY COMPLICATIONS TESTS</h1>
+        -> offerToApplyComplicationTests ->
+        -> unitTests
     
-    <h1>CHALLENGE CHECKS</h1>
-    -> challengeCheckTests ->
+    * [Challenge Checks Tests]
+        <h1>CHALLENGE CHECKS TESTS</h1>
+        -> challengeCheckTests ->
+        -> unitTests
     
-    -> END
+    * [Effort Challenge Checks Tests]
+        <h1>EFFORT CHALLENGE CHECKS TESTS</h1>
+        -> challengeCheckWithEffortTests ->
+        -> unitTests
+    
+    * [Finish Tests]
+        -> END

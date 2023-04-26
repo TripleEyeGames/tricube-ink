@@ -2,6 +2,7 @@
 
 CONST MAX_DIFFICULTY = 6
 CONST MAX_DICE = 3
+
 LIST challengeDice = 
     d1 = 10, d1_1, d1_2, d1_3, d1_4, d1_5, d1_6,
     d2 = 20, d2_1, d2_2, d2_3, d2_4, d2_5, d2_6,
@@ -16,6 +17,10 @@ VAR challengeDifficultyModifier = 0
 
 CONST MAX_EFFORT_TRIES = 30
 VAR challengeEffortProgress = 0
+
+// game settings
+VAR showRollResults = false
+VAR showDebugMessages = true
 
 // character data
 
@@ -100,7 +105,7 @@ VAR characterResolve = MAX_RESOLVE
 
     {
     - number_of_dice > MAX_DICE:
-        DEBUG: What are you doing? There's only {MAX_DICE} dice available.
+        !!! ERROR: The storyteller is trying to roll {number_of_dice} when there are only {MAX_DICE} dice max.
     - number_of_dice > 0:
         ~ temp rolled_value = RANDOM(1, MAX_DIFFICULTY)
         
@@ -283,12 +288,11 @@ VAR characterResolve = MAX_RESOLVE
 
     // DO THE CHECK
     ~ challengeResolution = rollDice(dice_to_roll, challengeDifficulty)
-    
-    // DEBUG: {challengeResolution}
-    
+    {showDebugMessages:<> - {challengeDice} - {challengeResolution}}
+
     { challengeResolution:
         - criticalFailure:
-            <> - {challengeDice} - Critical Failure...
+            {showRollResults:<> Critical Failure...}
             ->->
 
         - failure:
@@ -297,33 +301,30 @@ VAR characterResolve = MAX_RESOLVE
             - characterKarma > 0 and applicable_perks ? characterPerk and (success, exceptionalSuccess) ? checkRollResults(challengeDifficulty - 1):
                 -> offerToUseKarmaInChallengeRoll ->
             - else:
-                <> - {challengeDice} - Failure...
+                {showRollResults:<> Failure...}
                 ->->
             }
 
         - success:
             ~ giveQuirkPayout()
-            <> - {challengeDice} - Success!
+            {showRollResults:<> Success!}
             ->->
 
         - exceptionalSuccess:
             ~ giveQuirkPayout()
-            <> - {challengeDice} - Exceptional Success!
+            {showRollResults:<> Exceptional Success!}
             ->->
     }
     
     ->->
 
-=== challengeCheckWithEffortRecursive(recursion_depth, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks)
+=== challengeCheckWithEffortRecursive(recursion_depth, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks)
 
-    // DEBUG: effortChallengeRecursive({recursion_depth}, {required_effort}, {maximum_tries}, {applicable_trait}, {applicable_concepts}, {applicable_perks})
-    // DEBUG: {challengeEffortProgress} >= {required_effort}
-    
     {
         // we're done!
         - challengeEffortProgress >= required_effort:
             ->->
-
+        
         // short circuit recursion if there's a limit set
         - maximum_tries > 0 && recursion_depth > maximum_tries:
             ->->
@@ -333,6 +334,11 @@ VAR characterResolve = MAX_RESOLVE
             ->->
     }
     
+    // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
+    -> challengeRollSetup(target_difficulty, ()) ->
+
+    {showDebugMessages: {challengeEffortProgress} progress vs {required_effort} effort}
+
     // do the check
     -> doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
     
@@ -345,26 +351,29 @@ VAR characterResolve = MAX_RESOLVE
     }
     
     // continue recursive loop
-    -> challengeCheckWithEffortRecursive(1 + recursion_depth, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks) ->
+    -> challengeCheckWithEffortRecursive(1 + recursion_depth, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
 
     ->->
 
-=== challengeCheckWithEffort(required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure, -> goto_crit_failure)
+=== challengeCheckWithEffort(required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_timeout)
 
-    // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
-    -> challengeRollSetup(target_difficulty, applicable_quirks) ->
+    {
+        - maximum_tries > MAX_EFFORT_TRIES:
+        !!! ERROR: The storyteller tried to give too many tries ({maximum_tries} vs {MAX_EFFORT_TRIES} max.)
+        ->-> goto_timeout
+    }
 
     // effort counts up from 0 to required_effort threshold
     ~ challengeEffortProgress = 0
     
     // 1 is a magic number - this is the first time this recursive method is being called
-    -> challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks) ->
+    -> challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
+    
+    {showDebugMessages:{challengeEffortProgress} < {required_effort}? {challengeEffortProgress < required_effort}}
     
     {
-    - challengeEffortProgress == 0:
-        ->-> goto_crit_failure
     - challengeEffortProgress < required_effort:
-        ->-> goto_failure
+        ->-> goto_timeout
     }
 
     ->->

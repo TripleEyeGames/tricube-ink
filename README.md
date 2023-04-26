@@ -12,4 +12,4 @@ Ink is a narrative scripting language released by Inkle Studios.
 It can be found on [github](https://github.com/inkle/ink) (along with the [Inky script editor](https://github.com/inkle/inky)).
 
 # Thanks
-For answering my incessant questions, I want to thank Zadmar, Jesse, Rob, and anyone I've missed!
+For answering my incessant questions, I want to thank Zadmar, Jesse, Rob, Brandoff, and anyone I've missed!
