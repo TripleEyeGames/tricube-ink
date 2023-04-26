@@ -46,7 +46,7 @@ VAR characterResolve = MAX_RESOLVE
     }
     
     // if we've passed the size of the dice w/o finding a match, it's a failure
-    { LIST_VALUE(difficulty_level_to_check) == 0:
+    { not difficulty_level_to_check:
         ~ return challengeResolution.failure
     }
     
@@ -219,7 +219,7 @@ VAR characterResolve = MAX_RESOLVE
 
     {
         // short circuit if the challenge cannot be made more difficult
-        - LIST_VALUE(challengeDifficulty) == 0:
+        - not challengeDifficulty:
             ->->
 
         // short circuit if the character already has max karma/resolve
