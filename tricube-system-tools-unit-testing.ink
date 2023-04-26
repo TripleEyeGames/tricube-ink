@@ -21,27 +21,27 @@ Which test do you want to run?
     // crit fail
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1)
-    getRollResolutionRecursive - Critical Failure - 1 die ({challengeDice}) vs 5: {getRollResolutionRecursive(d1, 5) == criticalFailure:✔|<b>!!!</b>}
+    getRollResolutionRecursive - Critical Failure - 1 die ({challengeDice}) vs 5: {getRollResolutionRecursive(d1, standard) == criticalFailure:✔|<b>!!!</b>}
     
     // fail
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_2)
-    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 4: {getRollResolutionRecursive(d1, 4) == failure:✔|<b>!!!</b>}
+    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 4: {getRollResolutionRecursive(d1, easy) == failure:✔|<b>!!!</b>}
     
     // fail
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_5)
-    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 6: {getRollResolutionRecursive(d1, 6) == failure:✔|<b>!!!</b>}
+    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 6: {getRollResolutionRecursive(d1, hard) == failure:✔|<b>!!!</b>}
     
     // success
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_4)
-    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 4: {getRollResolutionRecursive(d1, 4) == success:✔|<b>!!!</b>}
+    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 4: {getRollResolutionRecursive(d1, easy) == success:✔|<b>!!!</b>}
     
     // success
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_6)
-    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 6: {getRollResolutionRecursive(d1, 6) == success:✔|<b>!!!</b>}
+    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 6: {getRollResolutionRecursive(d1, hard) == success:✔|<b>!!!</b>}
 
     ->->
 
@@ -49,103 +49,103 @@ Which test do you want to run?
     // crit fail - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1)
-    checkRollResults - Critical Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(5) == criticalFailure:✔|<b>!!!</b>}
+    checkRollResults - Critical Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
     
     // crit fail - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_1)
-    checkRollResults - Critical Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(5) == criticalFailure:✔|<b>!!!</b>}
+    checkRollResults - Critical Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
     
     // crit fail - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_1, d3, d3_1)
-    checkRollResults - Critical Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(5) == criticalFailure:✔|<b>!!!</b>}
+    checkRollResults - Critical Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
     
     // fail - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3)
-    checkRollResults - Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(5) == failure:✔|<b>!!!</b>}
+    checkRollResults - Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(standard) == failure:✔|<b>!!!</b>}
     
     // fail - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3, d2, d2_4)
-    checkRollResults - Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(5) == failure:✔|<b>!!!</b>}
+    checkRollResults - Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(standard) == failure:✔|<b>!!!</b>}
     
     // fail - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_2, d3, d3_3)
-    checkRollResults - Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(5) == failure:✔|<b>!!!</b>}
+    checkRollResults - Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(standard) == failure:✔|<b>!!!</b>}
     
     // success - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_5)
-    checkRollResults - Success - 1 die ({challengeDice}) vs 5: {checkRollResults(5) == success:✔|<b>!!!</b>}
+    checkRollResults - Success - 1 die ({challengeDice}) vs 5: {checkRollResults(standard) == success:✔|<b>!!!</b>}
     
     // success - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3, d2, d2_6)
-    checkRollResults - Success - 2 die ({challengeDice}) vs 5: {checkRollResults(5) == success:✔|<b>!!!</b>}
+    checkRollResults - Success - 2 die ({challengeDice}) vs 5: {checkRollResults(standard) == success:✔|<b>!!!</b>}
     
     // success - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_2, d3, d3_6)
-    checkRollResults - Success - 3 die ({challengeDice}) vs 5: {checkRollResults(5) == success:✔|<b>!!!</b>}
+    checkRollResults - Success - 3 die ({challengeDice}) vs 5: {checkRollResults(standard) == success:✔|<b>!!!</b>}
     
     // exceptional success - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_6, d2, d2_6)
-    checkRollResults - Exceptional Success - 2 die ({challengeDice}) vs 5: {checkRollResults(5) == exceptionalSuccess:✔|<b>!!!</b>}
+    checkRollResults - Exceptional Success - 2 die ({challengeDice}) vs 5: {checkRollResults(standard) == exceptionalSuccess:✔|<b>!!!</b>}
     
     // exceptional success - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_5, d3, d3_6)
-    checkRollResults - Exceptional Success - 3 die ({challengeDice}) vs 5: {checkRollResults(5) == exceptionalSuccess:✔|<b>!!!</b>}
+    checkRollResults - Exceptional Success - 3 die ({challengeDice}) vs 5: {checkRollResults(standard) == exceptionalSuccess:✔|<b>!!!</b>}
     
     ->->
 
 === rollDiceTests
     
     // 1 die
-    <tt>rollDice - 1 die vs 4: {rollDice(1, 4)} ({challengeDice})
-    <tt>...................... {rollDice(1, 4)} ({challengeDice})
-    <tt>...................... {rollDice(1, 4)} ({challengeDice})
-    <tt>...................... {rollDice(1, 4)} ({challengeDice})
-    <tt>rollDice - 1 die vs 5: {rollDice(1, 5)} ({challengeDice})
-    <tt>...................... {rollDice(1, 5)} ({challengeDice})
-    <tt>...................... {rollDice(1, 5)} ({challengeDice})
-    <tt>...................... {rollDice(1, 5)} ({challengeDice})
-    <tt>rollDice - 1 die vs 6: {rollDice(1, 6)} ({challengeDice})
-    <tt>...................... {rollDice(1, 6)} ({challengeDice})
-    <tt>...................... {rollDice(1, 6)} ({challengeDice})
-    <tt>...................... {rollDice(1, 6)} ({challengeDice})
+    <tt>rollDice - 1 die vs 4: {rollDice(1, easy)} ({challengeDice})
+    <tt>...................... {rollDice(1, easy)} ({challengeDice})
+    <tt>...................... {rollDice(1, easy)} ({challengeDice})
+    <tt>...................... {rollDice(1, easy)} ({challengeDice})
+    <tt>rollDice - 1 die vs 5: {rollDice(1, standard)} ({challengeDice})
+    <tt>...................... {rollDice(1, standard)} ({challengeDice})
+    <tt>...................... {rollDice(1, standard)} ({challengeDice})
+    <tt>...................... {rollDice(1, standard)} ({challengeDice})
+    <tt>rollDice - 1 die vs 6: {rollDice(1, hard)} ({challengeDice})
+    <tt>...................... {rollDice(1, hard)} ({challengeDice})
+    <tt>...................... {rollDice(1, hard)} ({challengeDice})
+    <tt>...................... {rollDice(1, hard)} ({challengeDice})
     
     // 2 die
-    <tt>rollDice - 2 die vs 4: {rollDice(2, 4)} ({challengeDice})
-    <tt>...................... {rollDice(2, 4)} ({challengeDice})
-    <tt>...................... {rollDice(2, 4)} ({challengeDice})
-    <tt>...................... {rollDice(2, 4)} ({challengeDice})
-    <tt>rollDice - 2 die vs 5: {rollDice(2, 5)} ({challengeDice})
-    <tt>...................... {rollDice(2, 5)} ({challengeDice})
-    <tt>...................... {rollDice(2, 5)} ({challengeDice})
-    <tt>...................... {rollDice(2, 5)} ({challengeDice})
-    <tt>rollDice - 2 die vs 6: {rollDice(2, 6)} ({challengeDice})
-    <tt>...................... {rollDice(2, 6)} ({challengeDice})
-    <tt>...................... {rollDice(2, 6)} ({challengeDice})
-    <tt>...................... {rollDice(2, 6)} ({challengeDice})
+    <tt>rollDice - 2 die vs 4: {rollDice(2, easy)} ({challengeDice})
+    <tt>...................... {rollDice(2, easy)} ({challengeDice})
+    <tt>...................... {rollDice(2, easy)} ({challengeDice})
+    <tt>...................... {rollDice(2, easy)} ({challengeDice})
+    <tt>rollDice - 2 die vs 5: {rollDice(2, standard)} ({challengeDice})
+    <tt>...................... {rollDice(2, standard)} ({challengeDice})
+    <tt>...................... {rollDice(2, standard)} ({challengeDice})
+    <tt>...................... {rollDice(2, standard)} ({challengeDice})
+    <tt>rollDice - 2 die vs 6: {rollDice(2, hard)} ({challengeDice})
+    <tt>...................... {rollDice(2, hard)} ({challengeDice})
+    <tt>...................... {rollDice(2, hard)} ({challengeDice})
+    <tt>...................... {rollDice(2, hard)} ({challengeDice})
     
     // 3 die
-    <tt>rollDice - 3 die vs 4: {rollDice(3, 4)} ({challengeDice})
-    <tt>...................... {rollDice(3, 4)} ({challengeDice})
-    <tt>...................... {rollDice(3, 4)} ({challengeDice})
-    <tt>...................... {rollDice(3, 4)} ({challengeDice})
-    <tt>rollDice - 3 die vs 5: {rollDice(3, 5)} ({challengeDice})
-    <tt>...................... {rollDice(3, 5)} ({challengeDice})
-    <tt>...................... {rollDice(3, 5)} ({challengeDice})
-    <tt>...................... {rollDice(3, 5)} ({challengeDice})
-    <tt>rollDice - 3 die vs 6: {rollDice(3, 6)} ({challengeDice})
-    <tt>...................... {rollDice(3, 6)} ({challengeDice})
-    <tt>...................... {rollDice(3, 6)} ({challengeDice})
-    <tt>...................... {rollDice(3, 6)} ({challengeDice})
+    <tt>rollDice - 3 die vs 4: {rollDice(3, easy)} ({challengeDice})
+    <tt>...................... {rollDice(3, easy)} ({challengeDice})
+    <tt>...................... {rollDice(3, easy)} ({challengeDice})
+    <tt>...................... {rollDice(3, easy)} ({challengeDice})
+    <tt>rollDice - 3 die vs 5: {rollDice(3, standard)} ({challengeDice})
+    <tt>...................... {rollDice(3, standard)} ({challengeDice})
+    <tt>...................... {rollDice(3, standard)} ({challengeDice})
+    <tt>...................... {rollDice(3, standard)} ({challengeDice})
+    <tt>rollDice - 3 die vs 6: {rollDice(3, hard)} ({challengeDice})
+    <tt>...................... {rollDice(3, hard)} ({challengeDice})
+    <tt>...................... {rollDice(3, hard)} ({challengeDice})
+    <tt>...................... {rollDice(3, hard)} ({challengeDice})
     
     ->->
 
@@ -198,7 +198,7 @@ Which test do you want to run?
     ->->
 
 === offerToApplyQuirkOnChallengeRollTests
-    - These tests need to be run manually:
+    - Some of these tests require manual intervention:
     -> offerToApplyQuirkOnChallengeRollTestsLoop
 
 === offerToApplyQuirkOnChallengeRollTestsLoop
@@ -283,7 +283,7 @@ Which test do you want to run?
         ->->
 
 === offerToApplyComplicationTests
-    - These tests need to be run manually:
+    - Some of these tests require manual intervention:
     -> offerToApplyComplicationTestsLoop
 
 === offerToApplyComplicationTestsLoop
@@ -327,7 +327,7 @@ Which test do you want to run?
         ->->
 
 === challengeCheckTests
-    - These tests need to be run manually:
+    - Some of these tests require manual intervention:
     -> challengeCheckTestsLoop
 
 === challengeCheckTestsLoop
@@ -342,43 +342,43 @@ Which test do you want to run?
     ~ storyComplications = ()
 
     + [1 Die, 4 Difficulty, No Perk Match]
-        challengeCheck(4) <>
-        -> challengeCheck (4, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        challengeCheck(easy) <>
+        -> challengeCheck (easy, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
         
         The challenge succeeded!
         -> challengeCheckTestsLoop
 
     + [1 Die, 5 Difficulty, No Perk Match]
-        challengeCheck(5) <>
-        -> challengeCheck (5, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        challengeCheck(standard) <>
+        -> challengeCheck (standard, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
         
         The challenge succeeded!
         -> challengeCheckTestsLoop
 
     + [1 Die, 6 Difficulty, No Perk Match]
-        challengeCheck(6) <>
-        -> challengeCheck (6, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        challengeCheck(hard) <>
+        -> challengeCheck (hard, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
         
         The challenge succeeded!
         -> challengeCheckTestsLoop
 
     + [1 Die, 4 Difficulty, Perk Match]
-        challengeCheck(4) <>
-        -> challengeCheck (4, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        challengeCheck(easy) <>
+        -> challengeCheck (easy, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
         
         The challenge succeeded!
         -> challengeCheckTestsLoop
 
     + [1 Die, 5 Difficulty, Perk Match]
-        challengeCheck(5) <>
-        -> challengeCheck (5, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        challengeCheck(standard) <>
+        -> challengeCheck (standard, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
         
         The challenge succeeded!
         -> challengeCheckTestsLoop
 
     + [1 Die, 6 Difficulty, Perk Match]
-        challengeCheck(6) <>
-        -> challengeCheck (6, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        challengeCheck(hard) <>
+        -> challengeCheck (hard, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
         
         The challenge succeeded!
         -> challengeCheckTestsLoop
@@ -391,7 +391,7 @@ Which test do you want to run?
     -> challengeCheckTestsLoop
 
 === challengeCheckWithEffortTests
-    - These tests need to be run manually:
+    - Some of these tests require manual intervention:
     -> challengeCheckWithEffortLoop
 
 === challengeCheckWithEffortLoop
@@ -408,7 +408,7 @@ Which test do you want to run?
     // failure cases
     + [Too Many ({MAX_EFFORT_TRIES+1}) Tries]
         challengeCheckWithEffort(1, {MAX_EFFORT_TRIES+1}, 4)
-        -> challengeCheckWithEffort (1, MAX_EFFORT_TRIES+1, 4, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (1, MAX_EFFORT_TRIES+1, easy, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
@@ -416,42 +416,42 @@ Which test do you want to run?
     // 1 Effort Section
     + [1 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
         challengeCheckWithEffort(1, 10, 4)
-        -> challengeCheckWithEffort (1, 10, 4, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (1, 10, easy, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
         
     + [1 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
         challengeCheckWithEffort(1, 10, 5)
-        -> challengeCheckWithEffort (1, 10, 5, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (1, 10, standard, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
         
     + [1 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
         challengeCheckWithEffort(1, 10, 6)
-        -> challengeCheckWithEffort (1, 10, 6, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (1, 10, hard, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
     
     + [3 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
         challengeCheckWithEffort(1, 10, 4)
-        -> challengeCheckWithEffort (1, 10, 4, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (1, 10, easy, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
         
     + [3 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
         challengeCheckWithEffort(1, 10, 5)
-        -> challengeCheckWithEffort (1, 10, 5, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (1, 10, standard, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
         
     + [3 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
         challengeCheckWithEffort(1, 10, 6)
-        -> challengeCheckWithEffort (1, 10, 6, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (1, 10, hard, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
@@ -459,42 +459,42 @@ Which test do you want to run?
     // 10 Effort Section
     + [1 Die, 10 Effort, 30 tries, 4 Difficulty, No Perk Match]
         challengeCheckWithEffort(10, 30, 4)
-        -> challengeCheckWithEffort (10, 30, 4, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (10, 30, easy, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
 
     + [1 Die, 10 Effort, 30 tries, 5 Difficulty, No Perk Match]
         challengeCheckWithEffort(10, 30, 5)
-        -> challengeCheckWithEffort (10, 30, 5, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (10, 30, standard, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
 
     + [1 Die, 10 Effort, 30 tries, 6 Difficulty, No Perk Match]
         challengeCheckWithEffort(10, 30, 6)
-        -> challengeCheckWithEffort (10, 30, 6, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (10, 30, hard, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
 
     + [3 Die, 10 Effort, 30 tries, 4 Difficulty, No Perk Match]
         challengeCheckWithEffort(10, 30, 4)
-        -> challengeCheckWithEffort (10, 30, 4, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (10, 30, easy, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
 
     + [3 Die, 10 Effort, 30 tries, 5 Difficulty, No Perk Match]
         challengeCheckWithEffort(10, 30, 5)
-        -> challengeCheckWithEffort (10, 30, 5, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (10, 30, standard, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop
 
     + [3 Die, 10 Effort, 30 tries, 6 Difficulty, No Perk Match]
         challengeCheckWithEffort(10, 30, 6)
-        -> challengeCheckWithEffort (10, 30, 6, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        -> challengeCheckWithEffort (10, 30, hard, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
         
         The challenge succeeded!
         -> challengeCheckWithEffortLoop

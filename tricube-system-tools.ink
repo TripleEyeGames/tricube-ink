@@ -12,7 +12,7 @@ LIST challengeType = safe, dangerous
 LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 LIST challengeQuirkPayout = karma, resolve
 
-VAR challengeDifficulty = 0
+LIST challengeDifficulty = easy = 4, standard = 5, hard = 6
 VAR challengeDifficultyModifier = 0
 
 CONST MAX_EFFORT_TRIES = 30
@@ -20,7 +20,7 @@ VAR challengeEffortProgress = 0
 
 // game settings
 VAR showRollResults = false
-VAR showDebugMessages = true
+VAR showDebugMessages = false
 
 // character data
 
@@ -38,28 +38,30 @@ VAR characterResolve = MAX_RESOLVE
 
 === function getRollResolutionRecursive(which_dice, difficulty_level_to_check)
     
+    {showDebugMessages:getRollResolutionRecursive({which_dice}, {difficulty_level_to_check} ({LIST_VALUE(difficulty_level_to_check)}))}
+    
     // if the value is not set, there's no resolution possible
     { challengeDice !? which_dice:
         ~return ()
     }
     
     // if we've passed the size of the dice w/o finding a match, it's a failure
-    { difficulty_level_to_check > MAX_DIFFICULTY:
+    { LIST_VALUE(difficulty_level_to_check) == 0:
         ~ return challengeResolution.failure
     }
     
     {
-        // if the value is 1, it's a potential critical failure
+        // if the value is 1, it's a critical failure
         - challengeDice ? challengeDice(LIST_VALUE(which_dice) + 1):
             ~ return challengeResolution.criticalFailure
             
         // if the value is set for the checked difficulty level, it's a success
-        - challengeDice ? challengeDice(LIST_VALUE(which_dice) + difficulty_level_to_check):
+        - challengeDice ? challengeDice(LIST_VALUE(which_dice) + LIST_VALUE(difficulty_level_to_check)):
             ~ return challengeResolution.success
         
         // if the value is not 1 and not set for the checked difficulty level, we need to proceed upwards
         - else:
-            ~ return getRollResolutionRecursive(which_dice, difficulty_level_to_check + 1)
+            ~ return getRollResolutionRecursive(which_dice, challengeDifficulty(LIST_VALUE(difficulty_level_to_check) + 1))
     }
 
 === function countSuccesses(difficulty)
@@ -217,7 +219,7 @@ VAR characterResolve = MAX_RESOLVE
 
     {
         // short circuit if the challenge cannot be made more difficult
-        - challengeDifficulty >= MAX_DIFFICULTY:
+        - LIST_VALUE(challengeDifficulty) == 0:
             ->->
 
         // short circuit if the character already has max karma/resolve
@@ -265,14 +267,14 @@ VAR characterResolve = MAX_RESOLVE
                 - useKarma():
                     ~ challengeResolution = success
                     ~ giveQuirkPayout()
-                    <> - {challengeDice} - Success!
+                    {showDebugMessages:<> - {challengeDice} - Success!}
                     ->->
                 - else:
-                    <> - {challengeDice} - Failure...
+                    {showDebugMessages:<> - {challengeDice} - Failure...}
                     ->->
             }
         + [Accept failure.]
-            <> - {challengeDice} - Failure...
+            {showDebugMessages:<> - {challengeDice} - Failure...}
             ->->
     ->->
 
