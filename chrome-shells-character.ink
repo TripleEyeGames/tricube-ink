@@ -1,4 +1,4 @@
-INCLUDE tricube-system-tools.ink
+INCLUDE tricube-tales-system.ink
 
 // character data
 

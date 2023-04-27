@@ -1,4 +1,4 @@
-INCLUDE tricube-system-tools.ink
+INCLUDE tricube-tales-system.ink
 
 // these list is part of the character definition for your story
 // we need to add it here to test the core functions
@@ -9,8 +9,8 @@ LIST characterQuirk = quirk1, quirk2, quirk3
 
 LIST storyComplications = complication1, complication2, complication3
 
-Which test do you want to run?
--> unitTests ->
+Which test suite do you want to run?
+-> testSuiteSelection ->
 
 // this function is part of the character definition for your story
 // we need to add it here to test the core functions
@@ -390,11 +390,11 @@ Which test do you want to run?
     The challenge failed.
     -> challengeCheckTestsLoop
 
-=== challengeCheckWithEffortTests
+=== challengeCheckWithEffortAndTimeoutTests
     - Some of these tests require manual intervention:
-    -> challengeCheckWithEffortLoop
+    -> challengeCheckWithEffortAndTimeoutTestsLoop
 
-=== challengeCheckWithEffortLoop
+=== challengeCheckWithEffortAndTimeoutTestsLoop
     // The presets for every challenge test
     ~ characterKarma = MAX_KARMA
     ~ characterResolve = MAX_RESOLVE
@@ -407,151 +407,151 @@ Which test do you want to run?
     
     // failure cases
     + [Too Many ({MAX_EFFORT_TRIES+1}) Tries]
-        challengeCheckWithEffort(1, {MAX_EFFORT_TRIES+1}, 4)
-        -> challengeCheckWithEffort (1, MAX_EFFORT_TRIES+1, easy, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(easy, 1, {MAX_EFFORT_TRIES+1})
+        -> challengeCheckWithEffortAndTimeout (easy, 1, MAX_EFFORT_TRIES+1, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
 
     // 1 Effort Section
     + [1 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffort(1, 10, 4)
-        -> challengeCheckWithEffort (1, 10, easy, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(easy, 1, 10)
+        -> challengeCheckWithEffortAndTimeout (easy, 1, 10, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
         
     + [1 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffort(1, 10, 5)
-        -> challengeCheckWithEffort (1, 10, standard, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(standard, 1, 10)
+        -> challengeCheckWithEffortAndTimeout (standard, 1, 10, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
         
     + [1 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffort(1, 10, 6)
-        -> challengeCheckWithEffort (1, 10, hard, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(hard, 1, 10)
+        -> challengeCheckWithEffortAndTimeout (hard, 1, 10, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
     
     + [3 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffort(1, 10, 4)
-        -> challengeCheckWithEffort (1, 10, easy, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(easy, 1, 10)
+        -> challengeCheckWithEffortAndTimeout (easy, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
         
     + [3 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffort(1, 10, 5)
-        -> challengeCheckWithEffort (1, 10, standard, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(standard, 1, 10)
+        -> challengeCheckWithEffortAndTimeout (standard, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
         
     + [3 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffort(1, 10, 6)
-        -> challengeCheckWithEffort (1, 10, hard, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(hard, 1, 10)
+        -> challengeCheckWithEffortAndTimeout (hard, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
     
     // 10 Effort Section
     + [1 Die, 10 Effort, 30 tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffort(10, 30, 4)
-        -> challengeCheckWithEffort (10, 30, easy, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(easy, 10, 30)
+        -> challengeCheckWithEffortAndTimeout (easy, 10, 30, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
 
     + [1 Die, 10 Effort, 30 tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffort(10, 30, 5)
-        -> challengeCheckWithEffort (10, 30, standard, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(standard, 10, 30)
+        -> challengeCheckWithEffortAndTimeout (standard, 10, 30, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
 
     + [1 Die, 10 Effort, 30 tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffort(10, 30, 6)
-        -> challengeCheckWithEffort (10, 30, hard, (), (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(hard, 10, 30)
+        -> challengeCheckWithEffortAndTimeout (hard, 10, 30, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
 
     + [3 Die, 10 Effort, 30 tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffort(10, 30, 4)
-        -> challengeCheckWithEffort (10, 30, easy, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(easy, 10, 30)
+        -> challengeCheckWithEffortAndTimeout (easy, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
 
     + [3 Die, 10 Effort, 30 tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffort(10, 30, 5)
-        -> challengeCheckWithEffort (10, 30, standard, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(standard, 10, 30)
+        -> challengeCheckWithEffortAndTimeout (standard, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
 
     + [3 Die, 10 Effort, 30 tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffort(10, 30, 6)
-        -> challengeCheckWithEffort (10, 30, hard, trait1, (), (), (), -> challengeCheckWithEffortTimeout) ->
+        challengeCheckWithEffortAndTimeout(hard, 10, 30)
+        -> challengeCheckWithEffortAndTimeout (hard, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortLoop
+        -> challengeCheckWithEffortAndTimeoutTestsLoop
 
     + [Finish Challenge Check Tests]
         ->->
 
-=== challengeCheckWithEffortTimeout
+=== challengeCheckWithEffortAndTimeout_TimeoutDivert
     The challenge failed.
-    -> challengeCheckWithEffortLoop
+    -> challengeCheckWithEffortAndTimeoutTestsLoop
 
-=== unitTests ===
+=== testSuiteSelection ===
     // which test suite do you want to run?
     * [Roll Resolution Tests]
         <h1>ROLL RESOLUTION TESTS</h1>
         -> getRollResolutionRecursiveTests ->
-        -> unitTests
+        -> testSuiteSelection
     
     * [Check Roll Results Tests]
         <h1>CHECK ROLL RESULTS TESTS</h1>
         -> checkRollResultsTests ->
-        -> unitTests
+        -> testSuiteSelection
     
     * [Roll Tests]
         <h1>ROLL TESTS</h1>
         -> rollDiceTests ->
-        -> unitTests
+        -> testSuiteSelection
     
     * [Karma Tests]
         <h1>KARMA TESTS</h1>
         -> useKarmaTests ->
-        -> unitTests
+        -> testSuiteSelection
     
     * [Resolve Tests]
         <h1>RESOLVE TESTS</h1>
         -> resolveTests ->
-        -> unitTests
+        -> testSuiteSelection
     
     * [Apply Quirk Tests]
         <h1>APPLY QUIRK TESTS</h1>
         -> offerToApplyQuirkOnChallengeRollTests ->
-        -> unitTests
+        -> testSuiteSelection
     
     * [Apply Complications Tests]
         <h1>APPLY COMPLICATIONS TESTS</h1>
         -> offerToApplyComplicationTests ->
-        -> unitTests
+        -> testSuiteSelection
     
     * [Challenge Checks Tests]
         <h1>CHALLENGE CHECKS TESTS</h1>
         -> challengeCheckTests ->
-        -> unitTests
+        -> testSuiteSelection
     
     * [Effort Challenge Checks Tests]
         <h1>EFFORT CHALLENGE CHECKS TESTS</h1>
-        -> challengeCheckWithEffortTests ->
-        -> unitTests
+        -> challengeCheckWithEffortAndTimeoutTests ->
+        -> testSuiteSelection
     
     * [Finish Tests]
         -> END
