@@ -12,10 +12,19 @@ LIST storyComplications = complication1, complication2, complication3
 Which test suite do you want to run?
 -> testSuiteSelection ->
 
-// this function is part of the character definition for your story
-// we need to add it here to test the core functions
+// these functions are part of the character definition for your story
+// we need to add them here to test the core functions
+=== function getCharacterTraitDescription(player_trait)
+    ~ return player_trait
+    
+=== function getCharacterConceptDescription(player_concept)
+    ~ return player_concept
+    
 === function getCharacterPerkDescription(character_perk)
     ~ return character_perk
+    
+=== function getCharacterQuirkDescription(player_quirk)
+    ~ return player_quirk
 
 === getRollResolutionRecursiveTests
     // crit fail
@@ -204,78 +213,147 @@ Which test suite do you want to run?
 === offerToApplyQuirkOnChallengeRollTestsLoop
     // skip - max difficulty
     * [Max Difficulty Check]
-        ~ challengeDifficulty = MAX_DIFFICULTY
-        ~ challengeDifficultyModifier = 0
-        ~ challengeQuirkPayout = ()
+        ~ challengeDifficulty = hard
+        ~ challengeQuirkActive = false
     
         ~ characterKarma = 1
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
         -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - max difficulty skip - {challengeDifficultyModifier == 0 and not challengeQuirkPayout:✔|<b>!!!</b>}
+        offerToApplyQuirkToChallengeRoll - max difficulty skip - {challengeDifficulty == hard and not challengeQuirkActive:✔|<b>!!!</b>}
         
         -> offerToApplyQuirkOnChallengeRollTestsLoop
 
     // skip - quirk miss
     * [Quirk List Miss Check]
-        ~ challengeDifficulty = 4
-        ~ challengeDifficultyModifier = 0
-        ~ challengeQuirkPayout = ()
+        ~ challengeDifficulty = easy
+        ~ challengeQuirkActive = false
     
         ~ characterKarma = 1
         ~ characterResolve = 1
         ~ characterQuirk = quirk2
         
         -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk miss skip - {challengeDifficultyModifier == 0 and not challengeQuirkPayout:✔|<b>!!!</b>}
+        offerToApplyQuirkToChallengeRoll - quirk miss skip - {challengeDifficulty == easy and not challengeQuirkActive:✔|<b>!!!</b>}
         
         -> offerToApplyQuirkOnChallengeRollTestsLoop
 
     // skip - max karma & resolve
     * [Max Karma and Resolve Check]
-        ~ challengeDifficulty = 4
-        ~ challengeDifficultyModifier = 0
-        ~ challengeQuirkPayout = ()
+        ~ challengeDifficulty = easy
+        ~ challengeQuirkActive = false
     
         ~ characterKarma = MAX_KARMA
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
         -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - max karma & resolve skip - {challengeDifficultyModifier == 0 and not challengeQuirkPayout:✔|<b>!!!</b>}
+        offerToApplyQuirkToChallengeRoll - max karma & resolve skip - {challengeDifficulty == easy and not challengeQuirkActive:✔|<b>!!!</b>}
         
         -> offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - karma
-    * [Accept Karma Bump Check]
-        ~ challengeDifficulty = 4
-        ~ challengeDifficultyModifier = 0
-        ~ challengeQuirkPayout = ()
+    * [Accept Quirk, Accept Karma Bump Check]
+        ~ challengeDifficulty = easy
+        ~ challengeQuirkActive = false
     
         ~ characterKarma = 1
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
-        offerToApplyQuirkToChallengeRoll - karma offer made - please pick +1 Karma
+        offerToApplyQuirkToChallengeRoll - offer made (karma)
         -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficultyModifier == 1 and challengeQuirkPayout == karma:✔|<b>!!!</b>}
+        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        
+        chooseQuirkPayout - please pick +1 Karma
+        -> chooseQuirkPayout ->
+        chooseQuirkPayout - results - {not challengeQuirkActive and characterKarma == 2:✔|<b>!!!</b>}
+        
+        -> offerToApplyQuirkOnChallengeRollTestsLoop
+
+    // quirk offer made - karma
+    * [Accept Quirk, Refuse Karma Bump Check]
+        ~ challengeDifficulty = easy
+        ~ challengeQuirkActive = false
+    
+        ~ characterKarma = 1
+        ~ characterResolve = MAX_RESOLVE
+        ~ characterQuirk = quirk1
+        
+        offerToApplyQuirkToChallengeRoll - offer made (karma)
+        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        
+        chooseQuirkPayout - please pick Nothing
+        -> chooseQuirkPayout ->
+        chooseQuirkPayout - results - {not challengeQuirkActive and characterKarma == 1:✔|<b>!!!</b>}
         
         -> offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - resolve
-    * [Accept Resolve Bump Check]
-        ~ challengeDifficulty = 4
-        ~ challengeDifficultyModifier = 0
-        ~ challengeQuirkPayout = ()
+    * [Accept Quirk, Accept Resolve Bump Check]
+        ~ challengeDifficulty = easy
+        ~ challengeQuirkActive = false
     
         ~ characterKarma = MAX_KARMA
         ~ characterResolve = 2
         ~ characterQuirk = quirk1
         
-        offerToApplyQuirkToChallengeRoll - resolve offer made - please pick +1 Resolve
+        offerToApplyQuirkToChallengeRoll - offer made (resolve)
         -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficultyModifier == 1 and challengeQuirkPayout == resolve:✔|<b>!!!</b>}
+        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        
+        // resolve payout only available if the challenge was a success
+        ~ challengeResolution = success
+        
+        chooseQuirkPayout - please pick +1 Resolve
+        -> chooseQuirkPayout ->
+        chooseQuirkPayout - results - {not challengeQuirkActive and characterResolve == 3:✔|<b>!!!</b>}
+
+        -> offerToApplyQuirkOnChallengeRollTestsLoop
+
+    // quirk offer made - resolve
+    * [Accept Quirk, Fail Challenge, No Resolve Bump Check]
+        ~ challengeDifficulty = easy
+        ~ challengeQuirkActive = false
+    
+        ~ characterKarma = MAX_KARMA
+        ~ characterResolve = 2
+        ~ characterQuirk = quirk1
+        
+        offerToApplyQuirkToChallengeRoll - offer made (resolve)
+        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        
+        // resolve payout only available if the challenge was a success
+        ~ challengeResolution = criticalFailure
+        
+        chooseQuirkPayout - challenge failed, nothing offered
+        -> chooseQuirkPayout ->
+        chooseQuirkPayout - results - {not challengeQuirkActive and characterResolve == 2:✔|<b>!!!</b>}
+
+        -> offerToApplyQuirkOnChallengeRollTestsLoop
+
+    // quirk offer made - karma
+    * [Accept Quirk, Accept Either Bump Check]
+        ~ challengeDifficulty = standard
+        ~ challengeQuirkActive = false
+    
+        ~ characterKarma = 1
+        ~ characterResolve = 1
+        ~ characterQuirk = quirk1
+        
+        offerToApplyQuirkToChallengeRoll - offer made (karma)
+        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == hard and challengeQuirkActive:✔|<b>!!!</b>}
+        
+        // resolve payout only available if the challenge was a success
+        ~ challengeResolution = success
+
+        chooseQuirkPayout - please pick +1 Either
+        -> chooseQuirkPayout ->
+        chooseQuirkPayout - results - {not challengeQuirkActive and (characterKarma == 2 or characterResolve ==2):✔|<b>!!!</b>}
         
         -> offerToApplyQuirkOnChallengeRollTestsLoop
 
@@ -390,11 +468,11 @@ Which test suite do you want to run?
     The challenge failed.
     -> challengeCheckTestsLoop
 
-=== challengeCheckWithEffortAndTimeoutTests
+=== challengeCheckWithEffortTriesTests
     - Some of these tests require manual intervention:
-    -> challengeCheckWithEffortAndTimeoutTestsLoop
+    -> challengeCheckWithEffortTriesTestsLoop
 
-=== challengeCheckWithEffortAndTimeoutTestsLoop
+=== challengeCheckWithEffortTriesTestsLoop
     // The presets for every challenge test
     ~ characterKarma = MAX_KARMA
     ~ characterResolve = MAX_RESOLVE
@@ -407,104 +485,104 @@ Which test suite do you want to run?
     
     // failure cases
     + [Too Many ({MAX_EFFORT_TRIES+1}) Tries]
-        challengeCheckWithEffortAndTimeout(easy, 1, {MAX_EFFORT_TRIES+1})
-        -> challengeCheckWithEffortAndTimeout (easy, 1, MAX_EFFORT_TRIES+1, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+        challengeCheckWithEffortTries(easy, 1, {MAX_EFFORT_TRIES+1})
+        -> challengeCheckWithEffortTries (easy, 1, MAX_EFFORT_TRIES+1, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
 
     // 1 Effort Section
     + [1 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(easy, 1, 10)
-        -> challengeCheckWithEffortAndTimeout (easy, 1, 10, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+        challengeCheckWithEffortTries(easy, 1, 10)
+        -> challengeCheckWithEffortTries (easy, 1, 10, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
         
     + [1 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(standard, 1, 10)
-        -> challengeCheckWithEffortAndTimeout (standard, 1, 10, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+        challengeCheckWithEffortTries(standard, 1, 10)
+        -> challengeCheckWithEffortTries (standard, 1, 10, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
         
     + [1 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(hard, 1, 10)
-        -> challengeCheckWithEffortAndTimeout (hard, 1, 10, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+        challengeCheckWithEffortTries(hard, 1, 10)
+        -> challengeCheckWithEffortTries (hard, 1, 10, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
     
     + [3 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(easy, 1, 10)
-        -> challengeCheckWithEffortAndTimeout (easy, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+        challengeCheckWithEffortTries(easy, 1, 10)
+        -> challengeCheckWithEffortTries (easy, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
         
     + [3 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(standard, 1, 10)
-        -> challengeCheckWithEffortAndTimeout (standard, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+        challengeCheckWithEffortTries(standard, 1, 10)
+        -> challengeCheckWithEffortTries (standard, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
         
     + [3 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(hard, 1, 10)
-        -> challengeCheckWithEffortAndTimeout (hard, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+        challengeCheckWithEffortTries(hard, 1, 10)
+        -> challengeCheckWithEffortTries (hard, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
     
     // 10 Effort Section
-    + [1 Die, 10 Effort, 30 tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(easy, 10, 30)
-        -> challengeCheckWithEffortAndTimeout (easy, 10, 30, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+    + [1 Die, 10 Effort, max. tries, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffortTries(easy, 10, 30)
+        -> challengeCheckWithEffortTries (easy, 10, MAX_EFFORT_TRIES, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
 
-    + [1 Die, 10 Effort, 30 tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(standard, 10, 30)
-        -> challengeCheckWithEffortAndTimeout (standard, 10, 30, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+    + [1 Die, 10 Effort, max. tries, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffortTries(standard, 10, 30)
+        -> challengeCheckWithEffortTries (standard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
 
-    + [1 Die, 10 Effort, 30 tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(hard, 10, 30)
-        -> challengeCheckWithEffortAndTimeout (hard, 10, 30, (), (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+    + [1 Die, 10 Effort, max. tries, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffortTries(hard, 10, 30)
+        -> challengeCheckWithEffortTries (hard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
 
-    + [3 Die, 10 Effort, 30 tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(easy, 10, 30)
-        -> challengeCheckWithEffortAndTimeout (easy, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+    + [3 Die, 10 Effort, max. tries, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffortTries(easy, 10, 30)
+        -> challengeCheckWithEffortTries (easy, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
 
-    + [3 Die, 10 Effort, 30 tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(standard, 10, 30)
-        -> challengeCheckWithEffortAndTimeout (standard, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+    + [3 Die, 10 Effort, max. tries, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffortTries(standard, 10, 30)
+        -> challengeCheckWithEffortTries (standard, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
 
-    + [3 Die, 10 Effort, 30 tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffortAndTimeout(hard, 10, 30)
-        -> challengeCheckWithEffortAndTimeout (hard, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortAndTimeout_TimeoutDivert) ->
+    + [3 Die, 10 Effort, max. tries, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffortTries(hard, 10, 30)
+        -> challengeCheckWithEffortTries (hard, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortAndTimeoutTestsLoop
+        -> challengeCheckWithEffortTriesTestsLoop
 
     + [Finish Challenge Check Tests]
         ->->
 
-=== challengeCheckWithEffortAndTimeout_TimeoutDivert
+=== challengeCheckWithEffortTries_TimeoutDivert
     The challenge failed.
-    -> challengeCheckWithEffortAndTimeoutTestsLoop
+    -> challengeCheckWithEffortTriesTestsLoop
 
 === testSuiteSelection ===
     // which test suite do you want to run?
@@ -550,7 +628,7 @@ Which test suite do you want to run?
     
     * [Effort Challenge Checks Tests]
         <h1>EFFORT CHALLENGE CHECKS TESTS</h1>
-        -> challengeCheckWithEffortAndTimeoutTests ->
+        -> challengeCheckWithEffortTriesTests ->
         -> testSuiteSelection
     
     * [Finish Tests]

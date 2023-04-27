@@ -1,6 +1,14 @@
+//********************************
+//*                              *
+//*        PRIVATE DATA          *
+//*                              *
+//* THESE ARE ALL REPRESENTATIVE *
+//* OF CORE TRICUBE TALE SYSTEMS *
+//*                              *
+//********************************
+
 // game data
 
-CONST MAX_DIFFICULTY = 6
 CONST MAX_DICE = 3
 
 LIST challengeDice = 
@@ -9,18 +17,13 @@ LIST challengeDice =
     d3 = 30, d3_1, d3_2, d3_3, d3_4, d3_5, d3_6
 
 LIST challengeType = safe, dangerous
-LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
-LIST challengeQuirkPayout = karma, resolve
-
 LIST challengeDifficulty = easy = 4, standard = 5, hard = 6
-VAR challengeDifficultyModifier = 0
+LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 
-CONST MAX_EFFORT_TRIES = 30
+VAR challengeQuirkActive = false
+
+CONST MAX_EFFORT_TRIES = 20
 VAR challengeEffortProgress = 0
-
-// game settings
-VAR showRollResults = false
-VAR showDebugMessages = false
 
 // character data
 
@@ -29,6 +32,11 @@ VAR characterKarma = MAX_KARMA
 
 CONST MAX_RESOLVE = 3
 VAR characterResolve = MAX_RESOLVE
+
+// engine settings
+
+VAR showRollResults = false
+VAR showDebugMessages = false
 
 //*******************************
 //*                             *
@@ -109,8 +117,9 @@ VAR characterResolve = MAX_RESOLVE
     - number_of_dice > MAX_DICE:
         !!! ERROR: The storyteller is trying to roll {number_of_dice} when there are only {MAX_DICE} dice max.
     - number_of_dice > 0:
-        ~ temp rolled_value = RANDOM(1, MAX_DIFFICULTY)
-        
+        {showDebugMessages:rollRecursive - {LIST_MAX(LIST_ALL(challengeDifficulty))}({LIST_VALUE(LIST_MAX(LIST_ALL(challengeDifficulty)))})}
+        ~ temp rolled_value = RANDOM(1, LIST_VALUE(LIST_MAX(LIST_ALL(challengeDifficulty))))
+
         ~ temp dice_offset = (number_of_dice * 10) + rolled_value
         ~ challengeDice += challengeDice(dice_offset)
 
@@ -137,24 +146,44 @@ VAR characterResolve = MAX_RESOLVE
         ~ return false
     }
 
-=== function giveQuirkPayout()
+=== chooseQuirkPayout()
 
     {
-        - challengeQuirkPayout == karma && characterKarma < MAX_KARMA:
-            ~ recoverKarma()
-            ~ challengeQuirkPayout = ()
-        - challengeQuirkPayout == resolve && characterResolve < MAX_RESOLVE: 
-            ~ recoverResolve()
-            ~ challengeQuirkPayout = ()
+        // short circuit if a quirk is not currently active
+        - not challengeQuirkActive:
+            ->->
+    }
+    
+    // turning off the flag, regardless of what happens next
+    ~ challengeQuirkActive = false
+
+    {
+        // short circuit if the character already has max karma/resolve
+        - characterKarma >= MAX_KARMA and characterResolve >= MAX_RESOLVE:
+            ->->
+        
+        // short circuit if the challenge was a failure, and the character already has max karma
+        // (the implication is that, if we make it here, the earlier check ( characterResolve >= MAX_RESOLVE ) was false
+        - (failure, criticalFailure) ? challengeResolution and characterKarma >= MAX_KARMA:
+            ->->
     }
 
-    ~ return
+    What do you want in return for applying your quirk?
+        + {characterKarma < MAX_KARMA} [Recover 1 karma.]
+            ~ recoverKarma()
+            ->->
+        + {(success, exceptionalSuccess) ? challengeResolution and characterResolve < MAX_RESOLVE} [Recover 1 resolve.]
+            ~ recoverResolve()
+            ->->
+        + Nothing.
+            ->->
+
 
 === offerToApplyQuirkToChallengeRoll(applicable_quirks)
 
     {
         // short circuit if the challenge cannot be made more difficult
-        - not challengeDifficulty:
+        - not (challengeDifficulty + 1):
             ->->
 
         // short circuit if the character already has max karma/resolve
@@ -165,14 +194,10 @@ VAR characterResolve = MAX_RESOLVE
     // if you have an applicable quirk and less than max karma, offer to regain some karma
     {
     - LIST_COUNT(applicable_quirks) > 0 and applicable_quirks ? characterQuirk:
-        You can try to recover some karma/resolve by being {characterQuirk} to increase the challenge difficulty (from {challengeDifficulty} to {challengeDifficulty + challengeDifficultyModifier + 1}).
-            + {characterKarma < MAX_KARMA} [Recover 1 karma.]
-                ~ challengeDifficultyModifier++
-                ~ challengeQuirkPayout = karma
-                ->->
-            + {characterResolve < MAX_RESOLVE} [Recover 1 resolve.]
-                ~ challengeDifficultyModifier++
-                ~ challengeQuirkPayout = resolve
+        You can try to recover some karma/resolve by being {getCharacterQuirkDescription(characterQuirk)} to increase the challenge difficulty (from {challengeDifficulty} to {challengeDifficulty + 1}).
+            + [Let my {getCharacterQuirkDescription(characterQuirk)} overcome me!]
+                ~ challengeDifficulty++
+                ~ challengeQuirkActive = true
                 ->->
             + [Continue as-is.]
                 ->->
@@ -184,11 +209,10 @@ VAR characterResolve = MAX_RESOLVE
 
     // setting base values for internal checks
     ~ challengeResolution = ()
-    ~ challengeQuirkPayout = ()
+    ~ challengeQuirkActive = false
 
     ~ challengeDifficulty = target_difficulty
-    ~ challengeDifficultyModifier = 0
-    
+
     // difficulty can be increased (if the player opts-in)
     -> offerToApplyQuirkToChallengeRoll(applicable_quirks) ->
     
@@ -201,7 +225,6 @@ VAR characterResolve = MAX_RESOLVE
             {
                 - useKarma():
                     ~ challengeResolution = success
-                    ~ giveQuirkPayout()
                     {showDebugMessages:<> - {challengeDice} - Success!}
                     ->->
                 - else:
@@ -227,6 +250,8 @@ VAR characterResolve = MAX_RESOLVE
     ~ challengeResolution = rollDice(dice_to_roll, challengeDifficulty)
     {showDebugMessages:<> - {challengeDice} - {challengeResolution}}
 
+    -> chooseQuirkPayout() ->
+    
     { challengeResolution:
         - criticalFailure:
             {showRollResults:<> Critical Failure...}
@@ -243,12 +268,10 @@ VAR characterResolve = MAX_RESOLVE
             }
 
         - success:
-            ~ giveQuirkPayout()
             {showRollResults:<> Success!}
             ->->
 
         - exceptionalSuccess:
-            ~ giveQuirkPayout()
             {showRollResults:<> Exceptional Success!}
             ->->
     }
@@ -283,6 +306,7 @@ VAR characterResolve = MAX_RESOLVE
     { challengeResolution:
     - success:
         ~ challengeEffortProgress++
+
     - exceptionalSuccess:
         ~ challengeEffortProgress = challengeEffortProgress + countSuccesses(challengeDifficulty)
     }

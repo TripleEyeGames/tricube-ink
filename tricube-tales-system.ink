@@ -71,7 +71,7 @@ INCLUDE tricube-tales-system-private.ink
                 ->->
     }
 
-=== challengeCheckWithEffortAndTimeout(target_difficulty, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_timeout)
+=== challengeCheckWithEffortTries(target_difficulty, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_timeout)
 
     {
         - maximum_tries > MAX_EFFORT_TRIES:
@@ -90,6 +90,26 @@ INCLUDE tricube-tales-system-private.ink
     {
     - challengeEffortProgress < required_effort:
         ->-> goto_timeout
+    }
+
+    ->->
+
+=== challengeCheckWithEffort(target_difficulty, required_effort, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_stop_early, -> goto_failure)
+
+    // standard effort-based challenge checks (like combat) remove resolve when you fail the roll
+    ~ temp maximum_tries = characterResolve
+
+    // effort counts up from 0 to required_effort threshold
+    ~ challengeEffortProgress = 0
+    
+    // 1 is a magic number - this is the first time this recursive method is being called
+    -> challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
+    
+    {showDebugMessages:{challengeEffortProgress} < {required_effort}? {challengeEffortProgress < required_effort}}
+    
+    {
+    - challengeEffortProgress < required_effort:
+        ->-> goto_failure
     }
 
     ->->
