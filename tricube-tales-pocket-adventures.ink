@@ -1,4 +1,4 @@
-INCLUDE tricube-tales-system-private.ink
+INCLUDE tricube-tales-pocket-adventures-private.ink
 
 //*******************************
 //*                             *

@@ -1,4 +1,4 @@
-INCLUDE tricube-tales-system.ink
+INCLUDE tricube-tales-pocket-adventures-core.ink
 
 // these list is part of the character definition for your story
 // we need to add it here to test the core functions

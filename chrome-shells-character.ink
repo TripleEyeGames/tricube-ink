@@ -1,4 +1,4 @@
-INCLUDE tricube-tales-system.ink
+INCLUDE tricube-tales-pocket-adventures.ink
 
 // character data
 
