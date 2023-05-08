@@ -83,7 +83,7 @@ INCLUDE tricube-tales-pocket-adventures-private.ink
     ~ challengeEffortProgress = 0
     
     // 1 is a magic number - this is the first time this recursive method is being called
-    -> challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
+    -> __private__challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
     
     {showDebugMessages:{challengeEffortProgress} < {required_effort}? {challengeEffortProgress < required_effort}}
     
@@ -103,7 +103,7 @@ INCLUDE tricube-tales-pocket-adventures-private.ink
     ~ challengeEffortProgress = 0
     
     // 1 is a magic number - this is the first time this recursive method is being called
-    -> challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
+    -> __private__challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
     
     {showDebugMessages:{challengeEffortProgress} < {required_effort}? {challengeEffortProgress < required_effort}}
     
@@ -117,10 +117,10 @@ INCLUDE tricube-tales-pocket-adventures-private.ink
 === challengeCheck (target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure, -> goto_crit_failure)
 
     // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
-    -> challengeRollSetup(target_difficulty, applicable_quirks) ->
+    -> __private__challengeRollSetup(target_difficulty, applicable_quirks) ->
 
     // do the roll, considering concepts and perks
-    -> doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
+    -> __private__doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
     
     // short circuit if the resolution is not favorable
     { challengeResolution:

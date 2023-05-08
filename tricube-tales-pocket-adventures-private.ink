@@ -44,7 +44,7 @@ VAR showDebugMessages = false
 //*                             *
 //*******************************
 
-=== function getRollResolutionRecursive(which_dice, difficulty_level_to_check)
+=== function __private__getRollResolutionRecursive(which_dice, difficulty_level_to_check)
     
     {showDebugMessages:getRollResolutionRecursive({which_dice}, {difficulty_level_to_check} ({LIST_VALUE(difficulty_level_to_check)}))}
     
@@ -69,27 +69,27 @@ VAR showDebugMessages = false
         
         // if the value is not 1 and not set for the checked difficulty level, we need to proceed upwards
         - else:
-            ~ return getRollResolutionRecursive(which_dice, challengeDifficulty(LIST_VALUE(difficulty_level_to_check) + 1))
+            ~ return __private__getRollResolutionRecursive(which_dice, challengeDifficulty(LIST_VALUE(difficulty_level_to_check) + 1))
     }
 
-=== function countSuccesses(difficulty)
+=== function __private__countSuccesses(difficulty)
     ~ temp number_of_successes = 0
-    { challengeDice ? d1 && getRollResolutionRecursive(d1, difficulty) == challengeResolution.success:
+    { challengeDice ? d1 && __private__getRollResolutionRecursive(d1, difficulty) == challengeResolution.success:
         ~ number_of_successes++
     }
-    { challengeDice ? d2 && getRollResolutionRecursive(d2, difficulty) == challengeResolution.success:
+    { challengeDice ? d2 && __private__getRollResolutionRecursive(d2, difficulty) == challengeResolution.success:
         ~ number_of_successes++
     }
-    { challengeDice ? d3 && getRollResolutionRecursive(d3, difficulty) == challengeResolution.success:
+    { challengeDice ? d3 && __private__getRollResolutionRecursive(d3, difficulty) == challengeResolution.success:
         ~ number_of_successes++
     }
     
     ~ return number_of_successes
 
-=== function checkRollResults(difficulty)
+=== function __private__checkRollResults(difficulty)
 
     ~ temp combined_roll_results = ()
-    ~ combined_roll_results = getRollResolutionRecursive(d1, difficulty) + getRollResolutionRecursive(d2, difficulty) + getRollResolutionRecursive(d3, difficulty)
+    ~ combined_roll_results = __private__getRollResolutionRecursive(d1, difficulty) + __private__getRollResolutionRecursive(d2, difficulty) + __private__getRollResolutionRecursive(d3, difficulty)
     { 
         // if we have only critical failures, then it is a critical failure
         - combined_roll_results == challengeResolution.criticalFailure:
@@ -101,7 +101,7 @@ VAR showDebugMessages = false
     }
     
     // count successes
-    ~ temp number_of_successes = countSuccesses(difficulty)
+    ~ temp number_of_successes = __private__countSuccesses(difficulty)
 
     // check for exceptional success
     { number_of_successes:
@@ -111,7 +111,7 @@ VAR showDebugMessages = false
         ~ return challengeResolution.exceptionalSuccess
     }
 
-=== function rollRecursive(number_of_dice)
+=== function __private__rollRecursive(number_of_dice)
 
     {
     - number_of_dice > MAX_DICE:
@@ -124,19 +124,19 @@ VAR showDebugMessages = false
         ~ challengeDice += challengeDice(dice_offset)
 
         ~ challengeDice += challengeDice(number_of_dice * 10)
-        ~ rollRecursive(number_of_dice - 1)
+        ~ __private__rollRecursive(number_of_dice - 1)
     // number_of_dice <= 0: recursion complete
     }
 
     ~ return
 
-=== function rollDice(number_of_dice, difficulty)
+=== function __private__rollDice(number_of_dice, difficulty)
 
     ~ challengeDice = ()
-    ~ rollRecursive(number_of_dice)
-    ~ return checkRollResults(difficulty)
+    ~ __private__rollRecursive(number_of_dice)
+    ~ return __private__checkRollResults(difficulty)
 
-=== function useKarma()
+=== function __private__useKarma()
 
     {
     - characterKarma > 0:
@@ -146,7 +146,7 @@ VAR showDebugMessages = false
         ~ return false
     }
 
-=== chooseQuirkPayout()
+=== __private__chooseQuirkPayout()
 
     {
         // short circuit if a quirk is not currently active
@@ -178,8 +178,7 @@ VAR showDebugMessages = false
         + Nothing.
             ->->
 
-
-=== offerToApplyQuirkToChallengeRoll(applicable_quirks)
+=== __private__offerToApplyQuirkToChallengeRoll(applicable_quirks)
 
     {
         // short circuit if the challenge cannot be made more difficult
@@ -205,7 +204,7 @@ VAR showDebugMessages = false
                 ->->
     }
 
-=== challengeRollSetup(target_difficulty, applicable_quirks)
+=== __private__challengeRollSetup(target_difficulty, applicable_quirks)
 
     // setting base values for internal checks
     ~ challengeResolution = ()
@@ -214,16 +213,16 @@ VAR showDebugMessages = false
     ~ challengeDifficulty = target_difficulty
 
     // difficulty can be increased (if the player opts-in)
-    -> offerToApplyQuirkToChallengeRoll(applicable_quirks) ->
+    -> __private__offerToApplyQuirkToChallengeRoll(applicable_quirks) ->
     
     ->->
 
-=== offerToUseKarmaInChallengeRoll()
+=== __private__offerToUseKarmaInChallengeRoll()
 
     - You've failed, but a little karma goes a long way.
         + [Use your {getCharacterPerkDescription(characterPerk)} (and 1 karma) to succeed.]
             {
-                - useKarma():
+                - __private__useKarma():
                     ~ challengeResolution = success
                     {showDebugMessages:<> - {challengeDice} - Success!}
                     ->->
@@ -236,7 +235,7 @@ VAR showDebugMessages = false
             ->->
     ->->
 
-=== doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks)
+=== __private__doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks)
 
     ~temp dice_to_roll = 1
     {
@@ -247,10 +246,10 @@ VAR showDebugMessages = false
     }
 
     // DO THE CHECK
-    ~ challengeResolution = rollDice(dice_to_roll, challengeDifficulty)
+    ~ challengeResolution = __private__rollDice(dice_to_roll, challengeDifficulty)
     {showDebugMessages:<> - {challengeDice} - {challengeResolution}}
 
-    -> chooseQuirkPayout() ->
+    -> __private__chooseQuirkPayout() ->
     
     { challengeResolution:
         - criticalFailure:
@@ -260,8 +259,8 @@ VAR showDebugMessages = false
         - failure:
             // if you have an applicable perk, and it would result in turning this failure to a success...
             {
-            - characterKarma > 0 and applicable_perks ? characterPerk and (success, exceptionalSuccess) ? checkRollResults(challengeDifficulty - 1):
-                -> offerToUseKarmaInChallengeRoll ->
+            - characterKarma > 0 and applicable_perks ? characterPerk and (success, exceptionalSuccess) ? __private__checkRollResults(challengeDifficulty - 1):
+                -> __private__offerToUseKarmaInChallengeRoll ->
             - else:
                 {showRollResults:<> Failure...}
                 ->->
@@ -278,7 +277,7 @@ VAR showDebugMessages = false
     
     ->->
 
-=== challengeCheckWithEffortRecursive(recursion_depth, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks)
+=== __private__challengeCheckWithEffortRecursive(recursion_depth, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks)
 
     {
         // we're done!
@@ -295,12 +294,12 @@ VAR showDebugMessages = false
     }
     
     // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
-    -> challengeRollSetup(target_difficulty, ()) ->
+    -> __private__challengeRollSetup(target_difficulty, ()) ->
 
     {showDebugMessages: {challengeEffortProgress} progress vs {required_effort} effort}
 
     // do the check
-    -> doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
+    -> __private__doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
     
     // advance our counter on successes
     { challengeResolution:
@@ -308,10 +307,10 @@ VAR showDebugMessages = false
         ~ challengeEffortProgress++
 
     - exceptionalSuccess:
-        ~ challengeEffortProgress = challengeEffortProgress + countSuccesses(challengeDifficulty)
+        ~ challengeEffortProgress = challengeEffortProgress + __private__countSuccesses(challengeDifficulty)
     }
     
     // continue recursive loop
-    -> challengeCheckWithEffortRecursive(1 + recursion_depth, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
+    -> __private__challengeCheckWithEffortRecursive(1 + recursion_depth, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
 
     ->->

@@ -1,4 +1,4 @@
-INCLUDE tricube-tales-pocket-adventures-core.ink
+INCLUDE tricube-tales-pocket-adventures.ink
 
 // these list is part of the character definition for your story
 // we need to add it here to test the core functions
@@ -10,7 +10,7 @@ LIST characterQuirk = quirk1, quirk2, quirk3
 LIST storyComplications = complication1, complication2, complication3
 
 Which test suite do you want to run?
--> testSuiteSelection ->
+-> __testing__testSuiteSelection ->
 
 // these functions are part of the character definition for your story
 // we need to add them here to test the core functions
@@ -26,147 +26,147 @@ Which test suite do you want to run?
 === function getCharacterQuirkDescription(player_quirk)
     ~ return player_quirk
 
-=== getRollResolutionRecursiveTests
+=== __testing__getRollResolutionRecursiveTests
     // crit fail
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1)
-    getRollResolutionRecursive - Critical Failure - 1 die ({challengeDice}) vs 5: {getRollResolutionRecursive(d1, standard) == criticalFailure:✔|<b>!!!</b>}
+    __private__getRollResolutionRecursive - Critical Failure - 1 die ({challengeDice}) vs 5: {__private__getRollResolutionRecursive(d1, standard) == criticalFailure:✔|<b>!!!</b>}
     
     // fail
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_2)
-    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 4: {getRollResolutionRecursive(d1, easy) == failure:✔|<b>!!!</b>}
+    __private__getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 4: {__private__getRollResolutionRecursive(d1, easy) == failure:✔|<b>!!!</b>}
     
     // fail
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_5)
-    getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 6: {getRollResolutionRecursive(d1, hard) == failure:✔|<b>!!!</b>}
+    __private__getRollResolutionRecursive - Failure - 1 die ({challengeDice}) vs 6: {__private__getRollResolutionRecursive(d1, hard) == failure:✔|<b>!!!</b>}
     
     // success
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_4)
-    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 4: {getRollResolutionRecursive(d1, easy) == success:✔|<b>!!!</b>}
+    __private__getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 4: {__private__getRollResolutionRecursive(d1, easy) == success:✔|<b>!!!</b>}
     
     // success
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_6)
-    getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 6: {getRollResolutionRecursive(d1, hard) == success:✔|<b>!!!</b>}
+    __private__getRollResolutionRecursive - Success - 1 die ({challengeDice}) vs 6: {__private__getRollResolutionRecursive(d1, hard) == success:✔|<b>!!!</b>}
 
     ->->
 
-=== checkRollResultsTests
+=== __testing__checkRollResultsTests
     // crit fail - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1)
-    checkRollResults - Critical Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
+    __private__checkRollResults - Critical Failure - 1 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
     
     // crit fail - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_1)
-    checkRollResults - Critical Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
+    __private__checkRollResults - Critical Failure - 2 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
     
     // crit fail - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_1, d3, d3_1)
-    checkRollResults - Critical Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
+    __private__checkRollResults - Critical Failure - 3 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == criticalFailure:✔|<b>!!!</b>}
     
     // fail - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3)
-    checkRollResults - Failure - 1 die ({challengeDice}) vs 5: {checkRollResults(standard) == failure:✔|<b>!!!</b>}
+    __private__checkRollResults - Failure - 1 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == failure:✔|<b>!!!</b>}
     
     // fail - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3, d2, d2_4)
-    checkRollResults - Failure - 2 die ({challengeDice}) vs 5: {checkRollResults(standard) == failure:✔|<b>!!!</b>}
+    __private__checkRollResults - Failure - 2 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == failure:✔|<b>!!!</b>}
     
     // fail - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_2, d3, d3_3)
-    checkRollResults - Failure - 3 die ({challengeDice}) vs 5: {checkRollResults(standard) == failure:✔|<b>!!!</b>}
+    __private__checkRollResults - Failure - 3 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == failure:✔|<b>!!!</b>}
     
     // success - 1 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_5)
-    checkRollResults - Success - 1 die ({challengeDice}) vs 5: {checkRollResults(standard) == success:✔|<b>!!!</b>}
+    __private__checkRollResults - Success - 1 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == success:✔|<b>!!!</b>}
     
     // success - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_3, d2, d2_6)
-    checkRollResults - Success - 2 die ({challengeDice}) vs 5: {checkRollResults(standard) == success:✔|<b>!!!</b>}
+    __private__checkRollResults - Success - 2 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == success:✔|<b>!!!</b>}
     
     // success - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_2, d3, d3_6)
-    checkRollResults - Success - 3 die ({challengeDice}) vs 5: {checkRollResults(standard) == success:✔|<b>!!!</b>}
+    __private__checkRollResults - Success - 3 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == success:✔|<b>!!!</b>}
     
     // exceptional success - 2 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_6, d2, d2_6)
-    checkRollResults - Exceptional Success - 2 die ({challengeDice}) vs 5: {checkRollResults(standard) == exceptionalSuccess:✔|<b>!!!</b>}
+    __private__checkRollResults - Exceptional Success - 2 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == exceptionalSuccess:✔|<b>!!!</b>}
     
     // exceptional success - 3 die
     ~ challengeDice = ()
     ~ challengeDice += (d1, d1_1, d2, d2_5, d3, d3_6)
-    checkRollResults - Exceptional Success - 3 die ({challengeDice}) vs 5: {checkRollResults(standard) == exceptionalSuccess:✔|<b>!!!</b>}
+    __private__checkRollResults - Exceptional Success - 3 die ({challengeDice}) vs 5: {__private__checkRollResults(standard) == exceptionalSuccess:✔|<b>!!!</b>}
     
     ->->
 
-=== rollDiceTests
+=== __testing__rollDiceTests
     
     // 1 die
-    <tt>rollDice - 1 die vs 4: {rollDice(1, easy)} ({challengeDice})
-    <tt>...................... {rollDice(1, easy)} ({challengeDice})
-    <tt>...................... {rollDice(1, easy)} ({challengeDice})
-    <tt>...................... {rollDice(1, easy)} ({challengeDice})
-    <tt>rollDice - 1 die vs 5: {rollDice(1, standard)} ({challengeDice})
-    <tt>...................... {rollDice(1, standard)} ({challengeDice})
-    <tt>...................... {rollDice(1, standard)} ({challengeDice})
-    <tt>...................... {rollDice(1, standard)} ({challengeDice})
-    <tt>rollDice - 1 die vs 6: {rollDice(1, hard)} ({challengeDice})
-    <tt>...................... {rollDice(1, hard)} ({challengeDice})
-    <tt>...................... {rollDice(1, hard)} ({challengeDice})
-    <tt>...................... {rollDice(1, hard)} ({challengeDice})
+    <tt>__private__rollDice - 1 die vs 4: {__private__rollDice(1, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, easy)} ({challengeDice})
+    <tt>__private__rollDice - 1 die vs 5: {__private__rollDice(1, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, standard)} ({challengeDice})
+    <tt>__private__rollDice - 1 die vs 6: {__private__rollDice(1, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(1, hard)} ({challengeDice})
     
     // 2 die
-    <tt>rollDice - 2 die vs 4: {rollDice(2, easy)} ({challengeDice})
-    <tt>...................... {rollDice(2, easy)} ({challengeDice})
-    <tt>...................... {rollDice(2, easy)} ({challengeDice})
-    <tt>...................... {rollDice(2, easy)} ({challengeDice})
-    <tt>rollDice - 2 die vs 5: {rollDice(2, standard)} ({challengeDice})
-    <tt>...................... {rollDice(2, standard)} ({challengeDice})
-    <tt>...................... {rollDice(2, standard)} ({challengeDice})
-    <tt>...................... {rollDice(2, standard)} ({challengeDice})
-    <tt>rollDice - 2 die vs 6: {rollDice(2, hard)} ({challengeDice})
-    <tt>...................... {rollDice(2, hard)} ({challengeDice})
-    <tt>...................... {rollDice(2, hard)} ({challengeDice})
-    <tt>...................... {rollDice(2, hard)} ({challengeDice})
+    <tt>__private__rollDice - 2 die vs 4: {__private__rollDice(2, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, easy)} ({challengeDice})
+    <tt>__private__rollDice - 2 die vs 5: {__private__rollDice(2, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, standard)} ({challengeDice})
+    <tt>__private__rollDice - 2 die vs 6: {__private__rollDice(2, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(2, hard)} ({challengeDice})
     
     // 3 die
-    <tt>rollDice - 3 die vs 4: {rollDice(3, easy)} ({challengeDice})
-    <tt>...................... {rollDice(3, easy)} ({challengeDice})
-    <tt>...................... {rollDice(3, easy)} ({challengeDice})
-    <tt>...................... {rollDice(3, easy)} ({challengeDice})
-    <tt>rollDice - 3 die vs 5: {rollDice(3, standard)} ({challengeDice})
-    <tt>...................... {rollDice(3, standard)} ({challengeDice})
-    <tt>...................... {rollDice(3, standard)} ({challengeDice})
-    <tt>...................... {rollDice(3, standard)} ({challengeDice})
-    <tt>rollDice - 3 die vs 6: {rollDice(3, hard)} ({challengeDice})
-    <tt>...................... {rollDice(3, hard)} ({challengeDice})
-    <tt>...................... {rollDice(3, hard)} ({challengeDice})
-    <tt>...................... {rollDice(3, hard)} ({challengeDice})
+    <tt>__private__rollDice - 3 die vs 4: {__private__rollDice(3, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, easy)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, easy)} ({challengeDice})
+    <tt>__private__rollDice - 3 die vs 5: {__private__rollDice(3, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, standard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, standard)} ({challengeDice})
+    <tt>__private__rollDice - 3 die vs 6: {__private__rollDice(3, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, hard)} ({challengeDice})
+    <tt>...................... {__private__rollDice(3, hard)} ({challengeDice})
     
     ->->
 
-=== useKarmaTests
+=== __testing__useKarmaTests
 
     // use once - failure
     ~ characterKarma = 0
-    useKarma - 0 remains 0: {not useKarma() and characterKarma == 0:✔|<b>!!!</b>}
+    __private__useKarma - 0 remains 0: {not __private__useKarma() and characterKarma == 0:✔|<b>!!!</b>}
     
     // use once - success
     ~ characterKarma = MAX_KARMA
-    useKarma - 3 becomes 2: {useKarma() and characterKarma == 2:✔|<b>!!!</b>}
+    __private__useKarma - 3 becomes 2: {__private__useKarma() and characterKarma == 2:✔|<b>!!!</b>}
 
     // recover once - failure
     ~ characterKarma = MAX_KARMA
@@ -178,7 +178,7 @@ Which test suite do you want to run?
     
     ->->
 
-=== resolveTests
+=== __testing__resolveTests
 
     // use once - safe - failure
     ~ characterResolve = 1
@@ -206,11 +206,11 @@ Which test suite do you want to run?
     
     ->->
 
-=== offerToApplyQuirkOnChallengeRollTests
+=== __testing__offerToApplyQuirkOnChallengeRollTests
     - Some of these tests require manual intervention:
-    -> offerToApplyQuirkOnChallengeRollTestsLoop
+    -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
-=== offerToApplyQuirkOnChallengeRollTestsLoop
+=== __testing__offerToApplyQuirkOnChallengeRollTestsLoop
     // skip - max difficulty
     * [Max Difficulty Check]
         ~ challengeDifficulty = hard
@@ -220,10 +220,10 @@ Which test suite do you want to run?
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
-        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - max difficulty skip - {challengeDifficulty == hard and not challengeQuirkActive:✔|<b>!!!</b>}
+        -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        __private__offerToApplyQuirkToChallengeRoll - max difficulty skip - {challengeDifficulty == hard and not challengeQuirkActive:✔|<b>!!!</b>}
         
-        -> offerToApplyQuirkOnChallengeRollTestsLoop
+        -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // skip - quirk miss
     * [Quirk List Miss Check]
@@ -234,10 +234,10 @@ Which test suite do you want to run?
         ~ characterResolve = 1
         ~ characterQuirk = quirk2
         
-        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk miss skip - {challengeDifficulty == easy and not challengeQuirkActive:✔|<b>!!!</b>}
+        -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        __private__offerToApplyQuirkToChallengeRoll - quirk miss skip - {challengeDifficulty == easy and not challengeQuirkActive:✔|<b>!!!</b>}
         
-        -> offerToApplyQuirkOnChallengeRollTestsLoop
+        -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // skip - max karma & resolve
     * [Max Karma and Resolve Check]
@@ -248,10 +248,10 @@ Which test suite do you want to run?
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
-        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - max karma & resolve skip - {challengeDifficulty == easy and not challengeQuirkActive:✔|<b>!!!</b>}
+        -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        __private__offerToApplyQuirkToChallengeRoll - max karma & resolve skip - {challengeDifficulty == easy and not challengeQuirkActive:✔|<b>!!!</b>}
         
-        -> offerToApplyQuirkOnChallengeRollTestsLoop
+        -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - karma
     * [Accept Quirk, Accept Karma Bump Check]
@@ -262,15 +262,15 @@ Which test suite do you want to run?
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
-        offerToApplyQuirkToChallengeRoll - offer made (karma)
-        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - offer made (karma)
+        -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
         
-        chooseQuirkPayout - please pick +1 Karma
-        -> chooseQuirkPayout ->
-        chooseQuirkPayout - results - {not challengeQuirkActive and characterKarma == 2:✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - please pick +1 Karma
+        -> __private__chooseQuirkPayout ->
+        __private__chooseQuirkPayout - results - {not challengeQuirkActive and characterKarma == 2:✔|<b>!!!</b>}
         
-        -> offerToApplyQuirkOnChallengeRollTestsLoop
+        -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - karma
     * [Accept Quirk, Refuse Karma Bump Check]
@@ -281,15 +281,15 @@ Which test suite do you want to run?
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
-        offerToApplyQuirkToChallengeRoll - offer made (karma)
-        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - offer made (karma)
+        -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
         
-        chooseQuirkPayout - please pick Nothing
-        -> chooseQuirkPayout ->
-        chooseQuirkPayout - results - {not challengeQuirkActive and characterKarma == 1:✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - please pick Nothing
+        -> __private__chooseQuirkPayout ->
+        __private__chooseQuirkPayout - results - {not challengeQuirkActive and characterKarma == 1:✔|<b>!!!</b>}
         
-        -> offerToApplyQuirkOnChallengeRollTestsLoop
+        -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - resolve
     * [Accept Quirk, Accept Resolve Bump Check]
@@ -300,18 +300,18 @@ Which test suite do you want to run?
         ~ characterResolve = 2
         ~ characterQuirk = quirk1
         
-        offerToApplyQuirkToChallengeRoll - offer made (resolve)
-        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - offer made (resolve)
+        -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
         
         // resolve payout only available if the challenge was a success
         ~ challengeResolution = success
         
-        chooseQuirkPayout - please pick +1 Resolve
-        -> chooseQuirkPayout ->
-        chooseQuirkPayout - results - {not challengeQuirkActive and characterResolve == 3:✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - please pick +1 Resolve
+        -> __private__chooseQuirkPayout ->
+        __private__chooseQuirkPayout - results - {not challengeQuirkActive and characterResolve == 3:✔|<b>!!!</b>}
 
-        -> offerToApplyQuirkOnChallengeRollTestsLoop
+        -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - resolve
     * [Accept Quirk, Fail Challenge, No Resolve Bump Check]
@@ -322,18 +322,18 @@ Which test suite do you want to run?
         ~ characterResolve = 2
         ~ characterQuirk = quirk1
         
-        offerToApplyQuirkToChallengeRoll - offer made (resolve)
-        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - offer made (resolve)
+        -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
         
         // resolve payout only available if the challenge was a success
         ~ challengeResolution = criticalFailure
         
-        chooseQuirkPayout - challenge failed, nothing offered
-        -> chooseQuirkPayout ->
-        chooseQuirkPayout - results - {not challengeQuirkActive and characterResolve == 2:✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - challenge failed, nothing offered
+        -> __private__chooseQuirkPayout ->
+        __private__chooseQuirkPayout - results - {not challengeQuirkActive and characterResolve == 2:✔|<b>!!!</b>}
 
-        -> offerToApplyQuirkOnChallengeRollTestsLoop
+        -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - karma
     * [Accept Quirk, Accept Either Bump Check]
@@ -344,27 +344,27 @@ Which test suite do you want to run?
         ~ characterResolve = 1
         ~ characterQuirk = quirk1
         
-        offerToApplyQuirkToChallengeRoll - offer made (karma)
-        -> offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == hard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - offer made (karma)
+        -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == hard and challengeQuirkActive:✔|<b>!!!</b>}
         
         // resolve payout only available if the challenge was a success
         ~ challengeResolution = success
 
-        chooseQuirkPayout - please pick +1 Either
-        -> chooseQuirkPayout ->
-        chooseQuirkPayout - results - {not challengeQuirkActive and (characterKarma == 2 or characterResolve ==2):✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - please pick +1 Either
+        -> __private__chooseQuirkPayout ->
+        __private__chooseQuirkPayout - results - {not challengeQuirkActive and (characterKarma == 2 or characterResolve ==2):✔|<b>!!!</b>}
         
-        -> offerToApplyQuirkOnChallengeRollTestsLoop
+        -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     + [Finish Quirk Tests]
         ->->
 
-=== offerToApplyComplicationTests
+=== __testing__offerToApplyComplicationTests
     - Some of these tests require manual intervention:
-    -> offerToApplyComplicationTestsLoop
+    -> __testing__offerToApplyComplicationTestsLoop
 
-=== offerToApplyComplicationTestsLoop
+=== __testing__offerToApplyComplicationTestsLoop
     // skip - max karma
     * [Max Karma Check]
         ~ characterKarma = MAX_KARMA
@@ -375,7 +375,7 @@ Which test suite do you want to run?
         -> offerToApplyComplication(complication1,quirk1) ->
         offerToApplyComplication - max karma skip - {characterKarma == MAX_KARMA and storyComplications !? complication1:✔|<b>!!!</b>}
         
-        -> offerToApplyComplicationTestsLoop
+        -> __testing__offerToApplyComplicationTestsLoop
     
     // skip - complication already set
     * [Duplicate Complication Check]
@@ -387,7 +387,7 @@ Which test suite do you want to run?
         -> offerToApplyComplication(complication1,quirk2) ->
         offerToApplyComplication - duplicate complication skip - {characterKarma == 1 and storyComplications ? complication1:✔|<b>!!!</b>}
         
-        -> offerToApplyComplicationTestsLoop
+        -> __testing__offerToApplyComplicationTestsLoop
     
     // complication offer made
     * [Accept Complication Check]
@@ -399,16 +399,16 @@ Which test suite do you want to run?
         -> offerToApplyComplication(complication3,quirk3) ->
         offerToApplyComplication - complication offer accepted - {characterKarma == 2 and storyComplications ? complication3:✔|<b>!!!</b>}
         
-        -> offerToApplyComplicationTestsLoop
+        -> __testing__offerToApplyComplicationTestsLoop
     
     + [Finished Complications Tests]
         ->->
 
-=== challengeCheckTests
+=== __testing__challengeCheckTests
     - Some of these tests require manual intervention:
-    -> challengeCheckTestsLoop
+    -> __testing__challengeCheckTestsLoop
 
-=== challengeCheckTestsLoop
+=== __testing__challengeCheckTestsLoop
     // The presets for every challenge test
     ~ characterKarma = MAX_KARMA
     ~ characterResolve = MAX_RESOLVE
@@ -421,58 +421,58 @@ Which test suite do you want to run?
 
     + [1 Die, 4 Difficulty, No Perk Match]
         challengeCheck(easy) <>
-        -> challengeCheck (easy, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        -> challengeCheck (easy, (), (), (), (), -> __testing__challengeCheckTestsFailure, -> __testing__challengeCheckTestsFailure) ->
         
         The challenge succeeded!
-        -> challengeCheckTestsLoop
+        -> __testing__challengeCheckTestsLoop
 
     + [1 Die, 5 Difficulty, No Perk Match]
         challengeCheck(standard) <>
-        -> challengeCheck (standard, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        -> challengeCheck (standard, (), (), (), (), -> __testing__challengeCheckTestsFailure, -> __testing__challengeCheckTestsFailure) ->
         
         The challenge succeeded!
-        -> challengeCheckTestsLoop
+        -> __testing__challengeCheckTestsLoop
 
     + [1 Die, 6 Difficulty, No Perk Match]
         challengeCheck(hard) <>
-        -> challengeCheck (hard, (), (), (), (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        -> challengeCheck (hard, (), (), (), (), -> __testing__challengeCheckTestsFailure, -> __testing__challengeCheckTestsFailure) ->
         
         The challenge succeeded!
-        -> challengeCheckTestsLoop
+        -> __testing__challengeCheckTestsLoop
 
     + [1 Die, 4 Difficulty, Perk Match]
         challengeCheck(easy) <>
-        -> challengeCheck (easy, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        -> challengeCheck (easy, (), (), perk1, (), -> __testing__challengeCheckTestsFailure, -> __testing__challengeCheckTestsFailure) ->
         
         The challenge succeeded!
-        -> challengeCheckTestsLoop
+        -> __testing__challengeCheckTestsLoop
 
     + [1 Die, 5 Difficulty, Perk Match]
         challengeCheck(standard) <>
-        -> challengeCheck (standard, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        -> challengeCheck (standard, (), (), perk1, (), -> __testing__challengeCheckTestsFailure, -> __testing__challengeCheckTestsFailure) ->
         
         The challenge succeeded!
-        -> challengeCheckTestsLoop
+        -> __testing__challengeCheckTestsLoop
 
     + [1 Die, 6 Difficulty, Perk Match]
         challengeCheck(hard) <>
-        -> challengeCheck (hard, (), (), perk1, (), -> challengeCheckTestsFailure, -> challengeCheckTestsFailure) ->
+        -> challengeCheck (hard, (), (), perk1, (), -> __testing__challengeCheckTestsFailure, -> __testing__challengeCheckTestsFailure) ->
         
         The challenge succeeded!
-        -> challengeCheckTestsLoop
+        -> __testing__challengeCheckTestsLoop
 
     + [Finish Challenge Check Tests]
         ->->
 
-=== challengeCheckTestsFailure
+=== __testing__challengeCheckTestsFailure
     The challenge failed.
-    -> challengeCheckTestsLoop
+    -> __testing__challengeCheckTestsLoop
 
-=== challengeCheckWithEffortTriesTests
+=== __testing__challengeCheckWithEffortTriesTests
     - Some of these tests require manual intervention:
-    -> challengeCheckWithEffortTriesTestsLoop
+    -> __testing__challengeCheckWithEffortTriesTestsLoop
 
-=== challengeCheckWithEffortTriesTestsLoop
+=== __testing__challengeCheckWithEffortTriesTestsLoop
     // The presets for every challenge test
     ~ characterKarma = MAX_KARMA
     ~ characterResolve = MAX_RESOLVE
@@ -486,150 +486,150 @@ Which test suite do you want to run?
     // failure cases
     + [Too Many ({MAX_EFFORT_TRIES+1}) Tries]
         challengeCheckWithEffortTries(easy, 1, {MAX_EFFORT_TRIES+1})
-        -> challengeCheckWithEffortTries (easy, 1, MAX_EFFORT_TRIES+1, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (easy, 1, MAX_EFFORT_TRIES+1, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
 
     // 1 Effort Section
     + [1 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(easy, 1, 10)
-        -> challengeCheckWithEffortTries (easy, 1, 10, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (easy, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
         
     + [1 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(standard, 1, 10)
-        -> challengeCheckWithEffortTries (standard, 1, 10, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (standard, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
         
     + [1 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(hard, 1, 10)
-        -> challengeCheckWithEffortTries (hard, 1, 10, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (hard, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
     
     + [3 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(easy, 1, 10)
-        -> challengeCheckWithEffortTries (easy, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (easy, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
         
     + [3 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(standard, 1, 10)
-        -> challengeCheckWithEffortTries (standard, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (standard, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
         
     + [3 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(hard, 1, 10)
-        -> challengeCheckWithEffortTries (hard, 1, 10, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (hard, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
     
     // 10 Effort Section
     + [1 Die, 10 Effort, max. tries, 4 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(easy, 10, 30)
-        -> challengeCheckWithEffortTries (easy, 10, MAX_EFFORT_TRIES, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (easy, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
 
     + [1 Die, 10 Effort, max. tries, 5 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(standard, 10, 30)
-        -> challengeCheckWithEffortTries (standard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (standard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
 
     + [1 Die, 10 Effort, max. tries, 6 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(hard, 10, 30)
-        -> challengeCheckWithEffortTries (hard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (hard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
 
     + [3 Die, 10 Effort, max. tries, 4 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(easy, 10, 30)
-        -> challengeCheckWithEffortTries (easy, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (easy, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
 
     + [3 Die, 10 Effort, max. tries, 5 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(standard, 10, 30)
-        -> challengeCheckWithEffortTries (standard, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (standard, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
 
     + [3 Die, 10 Effort, max. tries, 6 Difficulty, No Perk Match]
         challengeCheckWithEffortTries(hard, 10, 30)
-        -> challengeCheckWithEffortTries (hard, 10, 30, trait1, (), (), (), -> challengeCheckWithEffortTries_TimeoutDivert) ->
+        -> challengeCheckWithEffortTries (hard, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortTriesTestsLoop
 
     + [Finish Challenge Check Tests]
         ->->
 
-=== challengeCheckWithEffortTries_TimeoutDivert
+=== __testing__challengeCheckWithEffortTries_TimeoutDivert
     The challenge failed.
-    -> challengeCheckWithEffortTriesTestsLoop
+    -> __testing__challengeCheckWithEffortTriesTestsLoop
 
-=== testSuiteSelection ===
+=== __testing__testSuiteSelection ===
     // which test suite do you want to run?
     * [Roll Resolution Tests]
         <h1>ROLL RESOLUTION TESTS</h1>
-        -> getRollResolutionRecursiveTests ->
-        -> testSuiteSelection
+        -> __testing__getRollResolutionRecursiveTests ->
+        -> __testing__testSuiteSelection
     
     * [Check Roll Results Tests]
         <h1>CHECK ROLL RESULTS TESTS</h1>
-        -> checkRollResultsTests ->
-        -> testSuiteSelection
+        -> __testing__checkRollResultsTests ->
+        -> __testing__testSuiteSelection
     
     * [Roll Tests]
         <h1>ROLL TESTS</h1>
-        -> rollDiceTests ->
-        -> testSuiteSelection
+        -> __testing__rollDiceTests ->
+        -> __testing__testSuiteSelection
     
     * [Karma Tests]
         <h1>KARMA TESTS</h1>
-        -> useKarmaTests ->
-        -> testSuiteSelection
+        -> __testing__useKarmaTests ->
+        -> __testing__testSuiteSelection
     
     * [Resolve Tests]
         <h1>RESOLVE TESTS</h1>
-        -> resolveTests ->
-        -> testSuiteSelection
+        -> __testing__resolveTests ->
+        -> __testing__testSuiteSelection
     
     * [Apply Quirk Tests]
         <h1>APPLY QUIRK TESTS</h1>
-        -> offerToApplyQuirkOnChallengeRollTests ->
-        -> testSuiteSelection
+        -> __testing__offerToApplyQuirkOnChallengeRollTests ->
+        -> __testing__testSuiteSelection
     
     * [Apply Complications Tests]
         <h1>APPLY COMPLICATIONS TESTS</h1>
-        -> offerToApplyComplicationTests ->
-        -> testSuiteSelection
+        -> __testing__offerToApplyComplicationTests ->
+        -> __testing__testSuiteSelection
     
     * [Challenge Checks Tests]
         <h1>CHALLENGE CHECKS TESTS</h1>
-        -> challengeCheckTests ->
-        -> testSuiteSelection
+        -> __testing__challengeCheckTests ->
+        -> __testing__testSuiteSelection
     
     * [Effort Challenge Checks Tests]
         <h1>EFFORT CHALLENGE CHECKS TESTS</h1>
-        -> challengeCheckWithEffortTriesTests ->
-        -> testSuiteSelection
+        -> __testing__challengeCheckWithEffortTriesTests ->
+        -> __testing__testSuiteSelection
     
     * [Finish Tests]
         -> END
