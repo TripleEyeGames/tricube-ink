@@ -16,14 +16,11 @@ INCLUDE tricube-tales-pocket-adventures-private.ink
         ~ return false
     }
 
-=== function loseResolve(challenge_type)
+=== function loseResolve()
 
     {
-    - challenge_type == challengeType.safe && characterResolve > 1:
+    - characterResolve > 0:
         ~ characterResolve--
-        ~ return true
-    - challenge_type == challengeType.dangerous && characterResolve > 2:
-        ~ characterResolve -= 2
         ~ return true
     - else:
         ~ return false
@@ -73,44 +70,47 @@ INCLUDE tricube-tales-pocket-adventures-private.ink
                 ->->
     }
 
-=== challengeCheckWithEffortTries(target_difficulty, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_timeout)
+=== challengeCheckWithEffortVersusTimer(target_difficulty, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_failure)
 
     {
         - maximum_tries > MAX_EFFORT_TRIES:
         !!! ERROR: The storyteller tried to give too many tries ({maximum_tries} vs {MAX_EFFORT_TRIES} max.)
-        ->-> goto_timeout
+        ->-> goto_failure
     }
 
     // effort counts up from 0 to required_effort threshold
-    ~ challengeEffortProgress = 0
-    
+    ~ __private__challengeEffortProgress = 0
+    ~ __private__hasPlayerDisengaged = false
+
     // 1 is a magic number - this is the first time this recursive method is being called
-    -> __private__challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
+    -> __private__challengeCheckWithEffortRecursive(1, challengeType.safe, target_difficulty, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
     
-    {showDebugMessages:{challengeEffortProgress} < {required_effort}? {challengeEffortProgress < required_effort}}
+    {showDebugMessages:{__private__challengeEffortProgress} < {required_effort}? {__private__challengeEffortProgress < required_effort}}
     
     {
-    - challengeEffortProgress < required_effort:
-        ->-> goto_timeout
+    - __private__challengeEffortProgress < required_effort:
+        ->-> goto_failure
     }
 
     ->->
 
-=== challengeCheckWithEffort(target_difficulty, required_effort, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_stop_early, -> goto_failure)
-
-    // standard effort-based challenge checks (like combat) remove resolve when you fail the roll
-    ~ temp maximum_tries = characterResolve
+// standard effort-based challenge checks (like combat) remove resolve when you fail the roll
+=== challengeCheckWithEffortVersusResolve(target_difficulty, required_effort, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks, -> goto_disengage, -> goto_failure)
 
     // effort counts up from 0 to required_effort threshold
-    ~ challengeEffortProgress = 0
+    ~ __private__challengeEffortProgress = 0
+    ~ __private__hasPlayerDisengaged = false
     
     // 1 is a magic number - this is the first time this recursive method is being called
-    -> __private__challengeCheckWithEffortRecursive(1, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
+    -> __private__challengeCheckWithEffortRecursive(1, challengeType.dangerous, target_difficulty, required_effort, 0, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
     
-    {showDebugMessages:{challengeEffortProgress} < {required_effort}? {challengeEffortProgress < required_effort}}
+    {showDebugMessages:{__private__challengeEffortProgress} < {required_effort}? {__private__challengeEffortProgress < required_effort}}
     
     {
-    - challengeEffortProgress < required_effort:
+    - __private__hasPlayerDisengaged:
+        ->-> goto_disengage
+
+    - __private__challengeEffortProgress < required_effort:
         ->-> goto_failure
     }
 

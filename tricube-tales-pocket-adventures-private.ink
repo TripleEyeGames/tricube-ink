@@ -20,10 +20,13 @@ LIST challengeType = safe, dangerous
 LIST challengeDifficulty = easy = 4, standard = 5, hard = 6
 LIST challengeResolution = criticalFailure, failure, success, exceptionalSuccess
 
-VAR challengeQuirkActive = false
+// internal game data
 
 CONST MAX_EFFORT_TRIES = 20
-VAR challengeEffortProgress = 0
+VAR __private__challengeEffortProgress = 0
+
+VAR __private__challengeQuirkActive = false
+VAR __private__hasPlayerDisengaged = false
 
 // character data
 
@@ -140,12 +143,12 @@ VAR showDebugMessages = false
 
     {
         // short circuit if a quirk is not currently active
-        - not challengeQuirkActive:
+        - not __private__challengeQuirkActive:
             ->->
     }
     
     // turning off the flag, regardless of what happens next
-    ~ challengeQuirkActive = false
+    ~ __private__challengeQuirkActive = false
 
     {
         // short circuit if the character already has max karma/resolve
@@ -186,7 +189,7 @@ VAR showDebugMessages = false
         You can try to recover some karma/resolve by being {getCharacterQuirkDescription(characterQuirk)} to increase the challenge difficulty (from {challengeDifficulty} to {challengeDifficulty + 1}).
             + [Let my {getCharacterQuirkDescription(characterQuirk)} overcome me!]
                 ~ challengeDifficulty++
-                ~ challengeQuirkActive = true
+                ~ __private__challengeQuirkActive = true
                 ->->
             + [Continue as-is.]
                 ->->
@@ -198,7 +201,7 @@ VAR showDebugMessages = false
 
     // setting base values for internal checks
     ~ challengeResolution = ()
-    ~ challengeQuirkActive = false
+    ~ __private__challengeQuirkActive = false
 
     ~ challengeDifficulty = target_difficulty
 
@@ -267,11 +270,22 @@ VAR showDebugMessages = false
     
     ->->
 
-=== __private__challengeCheckWithEffortRecursive(recursion_depth, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks)
+=== __private__offerToDisengageBeforeChallengeRoll(challenge_type, required_effort)
+    // if this is a dangerous challenge, we need to offer disengage
+    - You have {characterResolve} resolve left, with {required_effort - __private__challengeEffortProgress} effort still to remove. Do you want to disengage?
+    + [Yes - let's stop.]
+        ~ __private__hasPlayerDisengaged = true
+        ->->
+    + [No; let's keep trying.]
+        ->->
+
+    ->->
+    
+=== __private__challengeCheckWithEffortRecursive(recursion_depth, challenge_type, target_difficulty, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks)
 
     {
         // we're done!
-        - challengeEffortProgress >= required_effort:
+        - __private__challengeEffortProgress >= required_effort:
             ->->
         
         // short circuit recursion if there's a limit set
@@ -281,26 +295,55 @@ VAR showDebugMessages = false
         // short circuit if we reach a maximum limit
         - recursion_depth >= MAX_EFFORT_TRIES:
             ->->
+
+        // short circuit recursion if the character has lost their resolve
+        - characterResolve <= 0:
+            ->->
+    }
+    
+    // if this is a dangerous challenge, we need to offer disengage
+    {
+        - challenge_type == dangerous and characterResolve < MAX_RESOLVE:
+            -> __private__offerToDisengageBeforeChallengeRoll(challenge_type, required_effort) ->
+
+            { __private__hasPlayerDisengaged: ->-> }
     }
     
     // target_difficulty has been converted to challengeDifficulty in setup; nothing else should use target_difficulty
-    -> __private__challengeRollSetup(target_difficulty, ()) ->
+    -> __private__challengeRollSetup(target_difficulty, applicable_quirks) ->
 
-    {showDebugMessages: {challengeEffortProgress} progress vs {required_effort} effort}
+    {showDebugMessages: {__private__challengeEffortProgress} progress vs {required_effort} effort}
 
     // do the check
     -> __private__doOneChallengeRoll(applicable_trait, applicable_concepts, applicable_perks) ->
     
     // advance our counter on successes
+    // take damage on failures, if the check is dangerous
     { challengeResolution:
+    - criticalFailure:
+    {
+        - challenge_type == dangerous:
+            You critically failed the roll, and lost two resolve!
+            ~ loseResolve()
+            ~ loseResolve()
+    }
+
+    - failure:
+    {
+        - challenge_type == dangerous:
+            You failed the roll, and lost one resolve.
+            ~ loseResolve()
+    }
+
     - success:
-        ~ challengeEffortProgress++
+        ~ __private__challengeEffortProgress++
 
     - exceptionalSuccess:
-        ~ challengeEffortProgress = challengeEffortProgress + __private__countSuccesses(challengeDifficulty)
+        ~ __private__challengeEffortProgress += __private__countSuccesses(challengeDifficulty)
     }
     
     // continue recursive loop
-    -> __private__challengeCheckWithEffortRecursive(1 + recursion_depth, required_effort, maximum_tries, target_difficulty, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
+    -> __private__challengeCheckWithEffortRecursive(1 + recursion_depth, challenge_type, target_difficulty, required_effort, maximum_tries, applicable_trait, applicable_concepts, applicable_perks, applicable_quirks) ->
 
     ->->
+

@@ -180,21 +180,13 @@ Which test suite do you want to run?
 
 === __testing__resolveTests
 
-    // use once - safe - failure
+    // use once - failure
     ~ characterResolve = 1
-    loseResolve(safe) - 1 remains 1: {not loseResolve(safe) and characterResolve == 1:✔|<b>!!!</b>}
+    loseResolve(dangerous) - 1 remains 1: {not loseResolve() and characterResolve == 1:✔|<b>!!!</b>}
     
-    // use once - safe - success
+    // use once - success
     ~ characterResolve = MAX_RESOLVE
-    loseResolve(safe) - 3 becomes 2: {loseResolve(safe) and characterResolve == 2:✔|<b>!!!</b>}
-
-    // use once - dangerous - failure
-    ~ characterResolve = 1
-    loseResolve(dangerous) - 1 remains 1: {not loseResolve(dangerous) and characterResolve == 1:✔|<b>!!!</b>}
-    
-    // use once - dangerous - success
-    ~ characterResolve = MAX_RESOLVE
-    loseResolve(dangerous) - 3 becomes 1: {loseResolve(dangerous) and characterResolve == 1:✔|<b>!!!</b>}
+    loseResolve(dangerous) - 3 becomes 2: {loseResolve() and characterResolve == 2:✔|<b>!!!</b>}
 
     // recover once - failure
     ~ characterResolve = MAX_RESOLVE
@@ -214,49 +206,49 @@ Which test suite do you want to run?
     // skip - max difficulty
     * [Max Difficulty Check]
         ~ challengeDifficulty = hard
-        ~ challengeQuirkActive = false
+        ~ __private__challengeQuirkActive = false
     
         ~ characterKarma = 1
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
         -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        __private__offerToApplyQuirkToChallengeRoll - max difficulty skip - {challengeDifficulty == hard and not challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - max difficulty skip - {challengeDifficulty == hard and not __private__challengeQuirkActive:✔|<b>!!!</b>}
         
         -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // skip - quirk miss
     * [Quirk List Miss Check]
         ~ challengeDifficulty = easy
-        ~ challengeQuirkActive = false
+        ~ __private__challengeQuirkActive = false
     
         ~ characterKarma = 1
         ~ characterResolve = 1
         ~ characterQuirk = quirk2
         
         -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        __private__offerToApplyQuirkToChallengeRoll - quirk miss skip - {challengeDifficulty == easy and not challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - quirk miss skip - {challengeDifficulty == easy and not __private__challengeQuirkActive:✔|<b>!!!</b>}
         
         -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // skip - max karma & resolve
     * [Max Karma and Resolve Check]
         ~ challengeDifficulty = easy
-        ~ challengeQuirkActive = false
+        ~ __private__challengeQuirkActive = false
     
         ~ characterKarma = MAX_KARMA
         ~ characterResolve = MAX_RESOLVE
         ~ characterQuirk = quirk1
         
         -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        __private__offerToApplyQuirkToChallengeRoll - max karma & resolve skip - {challengeDifficulty == easy and not challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - max karma & resolve skip - {challengeDifficulty == easy and not __private__challengeQuirkActive:✔|<b>!!!</b>}
         
         -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - karma
     * [Accept Quirk, Accept Karma Bump Check]
         ~ challengeDifficulty = easy
-        ~ challengeQuirkActive = false
+        ~ __private__challengeQuirkActive = false
     
         ~ characterKarma = 1
         ~ characterResolve = MAX_RESOLVE
@@ -264,18 +256,18 @@ Which test suite do you want to run?
         
         __private__offerToApplyQuirkToChallengeRoll - offer made (karma)
         -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and __private__challengeQuirkActive:✔|<b>!!!</b>}
         
         __private__chooseQuirkPayout - please pick +1 Karma
         -> __private__chooseQuirkPayout ->
-        __private__chooseQuirkPayout - results - {not challengeQuirkActive and characterKarma == 2:✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - results - {not __private__challengeQuirkActive and characterKarma == 2:✔|<b>!!!</b>}
         
         -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - karma
     * [Accept Quirk, Refuse Karma Bump Check]
         ~ challengeDifficulty = easy
-        ~ challengeQuirkActive = false
+        ~ __private__challengeQuirkActive = false
     
         ~ characterKarma = 1
         ~ characterResolve = MAX_RESOLVE
@@ -283,18 +275,18 @@ Which test suite do you want to run?
         
         __private__offerToApplyQuirkToChallengeRoll - offer made (karma)
         -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and __private__challengeQuirkActive:✔|<b>!!!</b>}
         
         __private__chooseQuirkPayout - please pick Nothing
         -> __private__chooseQuirkPayout ->
-        __private__chooseQuirkPayout - results - {not challengeQuirkActive and characterKarma == 1:✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - results - {not __private__challengeQuirkActive and characterKarma == 1:✔|<b>!!!</b>}
         
         -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - resolve
     * [Accept Quirk, Accept Resolve Bump Check]
         ~ challengeDifficulty = easy
-        ~ challengeQuirkActive = false
+        ~ __private__challengeQuirkActive = false
     
         ~ characterKarma = MAX_KARMA
         ~ characterResolve = 2
@@ -302,21 +294,21 @@ Which test suite do you want to run?
         
         __private__offerToApplyQuirkToChallengeRoll - offer made (resolve)
         -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and __private__challengeQuirkActive:✔|<b>!!!</b>}
         
         // resolve payout only available if the challenge was a success
         ~ challengeResolution = success
         
         __private__chooseQuirkPayout - please pick +1 Resolve
         -> __private__chooseQuirkPayout ->
-        __private__chooseQuirkPayout - results - {not challengeQuirkActive and characterResolve == 3:✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - results - {not __private__challengeQuirkActive and characterResolve == 3:✔|<b>!!!</b>}
 
         -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - resolve
     * [Accept Quirk, Fail Challenge, No Resolve Bump Check]
         ~ challengeDifficulty = easy
-        ~ challengeQuirkActive = false
+        ~ __private__challengeQuirkActive = false
     
         ~ characterKarma = MAX_KARMA
         ~ characterResolve = 2
@@ -324,21 +316,21 @@ Which test suite do you want to run?
         
         __private__offerToApplyQuirkToChallengeRoll - offer made (resolve)
         -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == standard and __private__challengeQuirkActive:✔|<b>!!!</b>}
         
         // resolve payout only available if the challenge was a success
         ~ challengeResolution = criticalFailure
         
         __private__chooseQuirkPayout - challenge failed, nothing offered
         -> __private__chooseQuirkPayout ->
-        __private__chooseQuirkPayout - results - {not challengeQuirkActive and characterResolve == 2:✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - results - {not __private__challengeQuirkActive and characterResolve == 2:✔|<b>!!!</b>}
 
         -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
     // quirk offer made - karma
     * [Accept Quirk, Accept Either Bump Check]
         ~ challengeDifficulty = standard
-        ~ challengeQuirkActive = false
+        ~ __private__challengeQuirkActive = false
     
         ~ characterKarma = 1
         ~ characterResolve = 1
@@ -346,14 +338,14 @@ Which test suite do you want to run?
         
         __private__offerToApplyQuirkToChallengeRoll - offer made (karma)
         -> __private__offerToApplyQuirkToChallengeRoll((quirk1)) ->
-        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == hard and challengeQuirkActive:✔|<b>!!!</b>}
+        __private__offerToApplyQuirkToChallengeRoll - quirk offer accepted - {challengeDifficulty == hard and __private__challengeQuirkActive:✔|<b>!!!</b>}
         
         // resolve payout only available if the challenge was a success
         ~ challengeResolution = success
 
         __private__chooseQuirkPayout - please pick +1 Either
         -> __private__chooseQuirkPayout ->
-        __private__chooseQuirkPayout - results - {not challengeQuirkActive and (characterKarma == 2 or characterResolve ==2):✔|<b>!!!</b>}
+        __private__chooseQuirkPayout - results - {not __private__challengeQuirkActive and (characterKarma == 2 or characterResolve ==2):✔|<b>!!!</b>}
         
         -> __testing__offerToApplyQuirkOnChallengeRollTestsLoop
 
@@ -482,11 +474,11 @@ Which test suite do you want to run?
     The challenge failed.
     -> __testing__challengeCheckTestsLoop
 
-=== __testing__challengeCheckWithEffortTriesTests
+=== __testing__challengeCheckWithEffortVersusTimerTests
     - Some of these tests require manual intervention:
-    -> __testing__challengeCheckWithEffortTriesTestsLoop
+    -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
 
-=== __testing__challengeCheckWithEffortTriesTestsLoop
+=== __testing__challengeCheckWithEffortVersusTimerTestsLoop
     // The presets for every challenge test
     ~ characterKarma = MAX_KARMA
     ~ characterResolve = MAX_RESOLVE
@@ -499,104 +491,216 @@ Which test suite do you want to run?
     
     // failure cases
     + [Too Many ({MAX_EFFORT_TRIES+1}) Tries]
-        challengeCheckWithEffortTries(easy, 1, {MAX_EFFORT_TRIES+1})
-        -> challengeCheckWithEffortTries (easy, 1, MAX_EFFORT_TRIES+1, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(easy, 1, {MAX_EFFORT_TRIES+1})
+        -> challengeCheckWithEffortVersusTimer (easy, 1, MAX_EFFORT_TRIES+1, (), (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
 
     // 1 Effort Section
     + [1 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(easy, 1, 10)
-        -> challengeCheckWithEffortTries (easy, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(easy, 1, 10)
+        -> challengeCheckWithEffortVersusTimer (easy, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
         
     + [1 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(standard, 1, 10)
-        -> challengeCheckWithEffortTries (standard, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(standard, 1, 10)
+        -> challengeCheckWithEffortVersusTimer (standard, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
         
     + [1 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(hard, 1, 10)
-        -> challengeCheckWithEffortTries (hard, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(hard, 1, 10)
+        -> challengeCheckWithEffortVersusTimer (hard, 1, 10, (), (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
     
     + [3 Die, 1 Effort, 10 Tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(easy, 1, 10)
-        -> challengeCheckWithEffortTries (easy, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(easy, 1, 10)
+        -> challengeCheckWithEffortVersusTimer (easy, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
         
     + [3 Die, 1 Effort, 10 Tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(standard, 1, 10)
-        -> challengeCheckWithEffortTries (standard, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(standard, 1, 10)
+        -> challengeCheckWithEffortVersusTimer (standard, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
         
     + [3 Die, 1 Effort, 10 Tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(hard, 1, 10)
-        -> challengeCheckWithEffortTries (hard, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(hard, 1, 10)
+        -> challengeCheckWithEffortVersusTimer (hard, 1, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
     
     // 10 Effort Section
     + [1 Die, 10 Effort, max. tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(easy, 10, 30)
-        -> challengeCheckWithEffortTries (easy, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(easy, 10, 30)
+        -> challengeCheckWithEffortVersusTimer (easy, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
 
     + [1 Die, 10 Effort, max. tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(standard, 10, 30)
-        -> challengeCheckWithEffortTries (standard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(standard, 10, 30)
+        -> challengeCheckWithEffortVersusTimer (standard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
 
     + [1 Die, 10 Effort, max. tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(hard, 10, 30)
-        -> challengeCheckWithEffortTries (hard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(hard, 10, 30)
+        -> challengeCheckWithEffortVersusTimer (hard, 10, MAX_EFFORT_TRIES, (), (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
 
     + [3 Die, 10 Effort, max. tries, 4 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(easy, 10, 30)
-        -> challengeCheckWithEffortTries (easy, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(easy, 10, 30)
+        -> challengeCheckWithEffortVersusTimer (easy, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
 
     + [3 Die, 10 Effort, max. tries, 5 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(standard, 10, 30)
-        -> challengeCheckWithEffortTries (standard, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(standard, 10, 30)
+        -> challengeCheckWithEffortVersusTimer (standard, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
 
     + [3 Die, 10 Effort, max. tries, 6 Difficulty, No Perk Match]
-        challengeCheckWithEffortTries(hard, 10, 30)
-        -> challengeCheckWithEffortTries (hard, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortTries_TimeoutDivert) ->
+        challengeCheckWithEffortVersusTimer(hard, 10, 30)
+        -> challengeCheckWithEffortVersusTimer (hard, 10, 30, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert) ->
         
         The challenge succeeded!
-        -> __testing__challengeCheckWithEffortTriesTestsLoop
+        -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
 
     + [Finish Challenge Check Tests]
         ->->
 
-=== __testing__challengeCheckWithEffortTries_TimeoutDivert
+=== __testing__challengeCheckWithEffortVersusTimer_TimeoutDivert
     The challenge failed.
-    -> __testing__challengeCheckWithEffortTriesTestsLoop
+    -> __testing__challengeCheckWithEffortVersusTimerTestsLoop
+
+=== __testing__challengeCheckWithEffortVersusResolveTests
+    - Some of these tests require manual intervention:
+    -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+
+=== __testing__challengeCheckWithEffortVersusResolveTestsLoop
+    // The presets for every challenge test
+    ~ characterKarma = MAX_KARMA
+    ~ characterResolve = MAX_RESOLVE
+    ~ characterTrait = trait1
+    ~ characterConcept = concept3
+    ~ characterPerk = perk2
+    ~ characterQuirk = quirk3
+    
+    ~ storyComplications = ()
+    
+    // 1 Effort Section
+    + [1 Die, 1 Effort, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(easy, 1)
+        -> challengeCheckWithEffortVersusResolve (easy, 1, (), (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+        
+    + [1 Die, 1 Effort, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(standard, 1)
+        -> challengeCheckWithEffortVersusResolve (standard, 1, (), (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+        
+    + [1 Die, 1 Effort, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(hard, 1)
+        -> challengeCheckWithEffortVersusResolve (hard, 1, (), (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+    
+    + [3 Die, 1 Effort, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(easy, 1)
+        -> challengeCheckWithEffortVersusResolve (easy, 1, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+        
+    + [3 Die, 1 Effort, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(standard, 1)
+        -> challengeCheckWithEffortVersusResolve (standard, 1, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+        
+    + [3 Die, 1 Effort, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(hard, 1, 10)
+        -> challengeCheckWithEffortVersusResolve (hard, 1, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+    
+    // 10 Effort Section
+    + [1 Die, 10 Effort, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(easy, 10)
+        -> challengeCheckWithEffortVersusResolve (easy, 10, (), (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+
+    + [1 Die, 10 Effort, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(standard, 10)
+        -> challengeCheckWithEffortVersusResolve (standard, 10, (), (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+
+    + [1 Die, 10 Effort, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(hard, 10)
+        -> challengeCheckWithEffortVersusResolve (hard, 10, (), (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+
+    + [3 Die, 10 Effort, 4 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(easy, 10)
+        -> challengeCheckWithEffortVersusResolve (easy, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+
+    + [3 Die, 10 Effort, 5 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(standard, 10)
+        -> challengeCheckWithEffortVersusResolve (standard, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+
+    + [3 Die, 10 Effort, 6 Difficulty, No Perk Match]
+        challengeCheckWithEffortVersusResolve(hard, 10)
+        -> challengeCheckWithEffortVersusResolve (hard, 10, trait1, (), (), (), -> __testing__challengeCheckWithEffortVersusResolve_DisengageDivert, -> __testing__challengeCheckWithEffortVersusResolve_FailureDivert) ->
+        
+        The challenge succeeded!
+        -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+
+    + [Finish Challenge Check Tests]
+        ->->
+
+=== __testing__challengeCheckWithEffortVersusResolve_DisengageDivert
+    The player disengaged from the challenge.
+    -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
+
+=== __testing__challengeCheckWithEffortVersusResolve_FailureDivert
+    The player lost all resolve during the challenge.
+    -> __testing__challengeCheckWithEffortVersusResolveTestsLoop
 
 === __testing__testSuiteSelection ===
     // which test suite do you want to run?
@@ -640,9 +744,14 @@ Which test suite do you want to run?
         -> __testing__challengeCheckTests ->
         -> __testing__testSuiteSelection
     
-    * [Effort Challenge Checks Tests]
-        <h1>EFFORT CHALLENGE CHECKS TESTS</h1>
-        -> __testing__challengeCheckWithEffortTriesTests ->
+    * [Effort Challenge (Vs Timer) Checks Tests]
+        <h1>EFFORT CHALLENGE (VS TIMER) CHECKS TESTS</h1>
+        -> __testing__challengeCheckWithEffortVersusTimerTests ->
+        -> __testing__testSuiteSelection
+    
+    * [Effort Challenge (Vs Resolve) Checks Tests]
+        <h1>EFFORT CHALLENGE (VS RESOLVE) CHECKS TESTS</h1>
+        -> __testing__challengeCheckWithEffortVersusResolveTests ->
         -> __testing__testSuiteSelection
     
     * [Finish Tests]
