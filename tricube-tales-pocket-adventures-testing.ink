@@ -162,11 +162,11 @@ Which test suite do you want to run?
 
     // use once - failure
     ~ characterKarma = 0
-    __private__useKarma - 0 remains 0: {not __private__useKarma() and characterKarma == 0:✔|<b>!!!</b>}
+    loseKarma - 0 remains 0: {not loseKarma() and characterKarma == 0:✔|<b>!!!</b>}
     
     // use once - success
     ~ characterKarma = MAX_KARMA
-    __private__useKarma - 3 becomes 2: {__private__useKarma() and characterKarma == 2:✔|<b>!!!</b>}
+    loseKarma - 3 becomes 2: {loseKarma() and characterKarma == 2:✔|<b>!!!</b>}
 
     // recover once - failure
     ~ characterKarma = MAX_KARMA

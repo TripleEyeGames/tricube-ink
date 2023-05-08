@@ -6,26 +6,28 @@ INCLUDE tricube-tales-pocket-adventures-private.ink
 //*                             *
 //*******************************
 
+=== function loseKarma()
+
+    {
+    - characterKarma > 0:
+        ~ characterKarma--
+        ~ return true
+    - else:
+        ~ return false
+    }
+
 === function loseResolve(challenge_type)
 
     {
-    - challenge_type == challengeType.safe:
-        {
-        - characterResolve > 1:
-            ~ characterResolve--
-            ~ return true
-        }
+    - challenge_type == challengeType.safe && characterResolve > 1:
+        ~ characterResolve--
+        ~ return true
+    - challenge_type == challengeType.dangerous && characterResolve > 2:
+        ~ characterResolve -= 2
+        ~ return true
     - else:
-        {
-        - characterResolve  > 2:
-            ~ characterResolve--
-            ~ characterResolve--
-            ~ return true
-        }
+        ~ return false
     }
-
-    ~ return false
-
 === function recoverKarma()
 
     {

@@ -136,16 +136,6 @@ VAR showDebugMessages = false
     ~ __private__rollRecursive(number_of_dice)
     ~ return __private__checkRollResults(difficulty)
 
-=== function __private__useKarma()
-
-    {
-    - characterKarma > 0:
-        ~ characterKarma--
-        ~ return true
-    - else:
-        ~ return false
-    }
-
 === __private__chooseQuirkPayout()
 
     {
@@ -222,7 +212,7 @@ VAR showDebugMessages = false
     - You've failed, but a little karma goes a long way.
         + [Use your {getCharacterPerkDescription(characterPerk)} (and 1 karma) to succeed.]
             {
-                - __private__useKarma():
+                - loseKarma():
                     ~ challengeResolution = success
                     {showDebugMessages:<> - {challengeDice} - Success!}
                     ->->
