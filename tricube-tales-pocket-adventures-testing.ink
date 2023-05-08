@@ -360,11 +360,11 @@ Which test suite do you want to run?
     + [Finish Quirk Tests]
         ->->
 
-=== __testing__offerToApplyComplicationTests
+=== __testing__offerComplicationTests
     - Some of these tests require manual intervention:
-    -> __testing__offerToApplyComplicationTestsLoop
+    -> __testing__offerComplicationTestsLoop
 
-=== __testing__offerToApplyComplicationTestsLoop
+=== __testing__offerComplicationTestsLoop
     // skip - max karma
     * [Max Karma Check]
         ~ characterKarma = MAX_KARMA
@@ -372,10 +372,10 @@ Which test suite do you want to run?
         
         ~ storyComplications = ()
         
-        -> offerToApplyComplication(complication1,quirk1) ->
-        offerToApplyComplication - max karma skip - {characterKarma == MAX_KARMA and storyComplications !? complication1:✔|<b>!!!</b>}
+        -> offerComplication(complication1,quirk1) ->
+        offerComplication - max karma skip - {characterKarma == MAX_KARMA and storyComplications !? complication1:✔|<b>!!!</b>}
         
-        -> __testing__offerToApplyComplicationTestsLoop
+        -> __testing__offerComplicationTestsLoop
     
     // skip - complication already set
     * [Duplicate Complication Check]
@@ -384,22 +384,36 @@ Which test suite do you want to run?
         
         ~ storyComplications = complication1
         
-        -> offerToApplyComplication(complication1,quirk2) ->
-        offerToApplyComplication - duplicate complication skip - {characterKarma == 1 and storyComplications ? complication1:✔|<b>!!!</b>}
+        -> offerComplication(complication1,quirk2) ->
+        offerComplication - duplicate complication skip - {characterKarma == 1 and storyComplications ? complication1:✔|<b>!!!</b>}
         
-        -> __testing__offerToApplyComplicationTestsLoop
+        -> __testing__offerComplicationTestsLoop
     
-    // complication offer made
+    // complication offer made & accepted
     * [Accept Complication Check]
         ~ characterKarma = 1
         ~ characterQuirk = quirk3
         
         ~ storyComplications = complication2
         
-        -> offerToApplyComplication(complication3,quirk3) ->
-        offerToApplyComplication - complication offer accepted - {characterKarma == 2 and storyComplications ? complication3:✔|<b>!!!</b>}
+        offerComplication - please take the complication
+        -> offerComplication(complication3,quirk3) ->
+        offerComplication - complication offer accepted - {characterKarma == 2 and storyComplications ? complication3:✔|<b>!!!</b>}
         
-        -> __testing__offerToApplyComplicationTestsLoop
+        -> __testing__offerComplicationTestsLoop
+    
+    // complication offer made & refused
+    * [Refuse Complication Check]
+        ~ characterKarma = 1
+        ~ characterQuirk = quirk3
+        
+        ~ storyComplications = complication2
+        
+        offerComplication - please continue as-is
+        -> offerComplication(complication3,quirk3) ->
+        offerComplication - complication offer rejected - {characterKarma == 1 and storyComplications !? complication3:✔|<b>!!!</b>}
+        
+        -> __testing__offerComplicationTestsLoop
     
     + [Finished Complications Tests]
         ->->
@@ -618,7 +632,7 @@ Which test suite do you want to run?
     
     * [Apply Complications Tests]
         <h1>APPLY COMPLICATIONS TESTS</h1>
-        -> __testing__offerToApplyComplicationTests ->
+        -> __testing__offerComplicationTests ->
         -> __testing__testSuiteSelection
     
     * [Challenge Checks Tests]

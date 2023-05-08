@@ -46,7 +46,7 @@ INCLUDE tricube-tales-pocket-adventures-private.ink
         ~ return false
     }
 
-=== offerToApplyComplication(optional_complication, applicable_quirks)
+=== offerComplication(optional_complication, applicable_quirks)
 
     {
         // short circuit if the complication has already been applied
@@ -60,7 +60,7 @@ INCLUDE tricube-tales-pocket-adventures-private.ink
     
     {
     - LIST_COUNT(applicable_quirks) > 0 and applicable_quirks ? characterQuirk:
-        You can recover some karma by being {characterQuirk} and taking on {optional_complication}.
+        You can recover some karma by being {characterQuirk} right now and taking on {optional_complication}.
             + {characterKarma < MAX_KARMA} [Take the complication.]
                 ~ storyComplications += optional_complication
                 ~ recoverKarma()
